@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+backend/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment
+.env
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Backend
+backend/models/
+!backend/models/.gitkeep
+
+# Build
+dist/
+build/
+coverage/
