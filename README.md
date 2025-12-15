@@ -1,59 +1,98 @@
-# Ballistic React + FastAPI Project
+# Ballistic Trajectory Prediction (React + FastAPI)
 
-## Quick run (backend)
-cd backend
-python -m venv venv
-# activate venv:
-# Windows: venv\Scripts\activate
-# mac/linux: source venv/bin/activate
-pip install -r requirements.txt
+A compact full-stack project that simulates ballistic trajectories using a physics model, augments predictions with an ML model (Random Forest or other regressors), and provides a React frontend UI for visualization and media preview.
 
-# run backend
-uvicorn app.main:app --reload --port 8000
+Features
+- Physics-based trajectory simulation endpoint (`/predict`).
+- ML model for fast impact prediction with retraining endpoint (`/retrain`).
+- Static media upload and serve at `/ballistic/*`.
+- Small React + Vite frontend that visualizes trajectories and lets you download or upload preview media.
 
-## Quick run (frontend)
-cd ../frontend
-npm install
-npm run dev
-# open the Vite URL (usually http://127.0.0.1:5173)
+Repository layout
+- `backend/` — FastAPI application, model training and storage, static media folder.
+	- `app/` — FastAPI app and modules (`main.py`, `model_store.py`, `sim.py`).
+	- `models/` — Saved ML artifacts (e.g., `rf_model.joblib`).
+- `frontend/` — Vite + React single-page app (source in `frontend/src`).
+- `static/` & `frontend/public/ballistic/` — media locations for previews.
 
-## Notes
-- Backend default listens on 127.0.0.1:8000
-- Frontend talks to backend /predict endpoint for simulation
-- Retrain endpoint: POST /retrain with JSON { "n_samples":1200, "use_forest": true }
+Prerequisites
+- Python 3.11+ (recommended)
+- Node.js 18+ and npm 9+ (for the frontend)
+- Git (for version control)
 
-## Ballistic Simulation (Python script)
-
-The project includes a Python ballistic simulation script (downloadable from the frontend Ballistic view).
-
-Local run (recommended):
-
-1. Download the script from the frontend: open the app, click the "Ballistic" button in the header, then "Download Simulation Script".
-2. Create a virtual environment and install dependencies:
+Backend - install & run
+1. Create and activate a Python virtual environment:
 
 ```bash
+cd backend
 python -m venv venv
 # Windows
 venv\Scripts\activate
-pip install numpy scipy matplotlib
+# mac/linux
+source venv/bin/activate
 ```
 
-3. Run the script:
+2. Install dependencies and run the API:
 
 ```bash
-python ballistic_sim.py
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
 ```
 
-4. The script will emit images or video frames. To preview them in the frontend copy the generated outputs into the frontend public folder:
+The API will be available at http://127.0.0.1:8000 and includes automatic docs at http://127.0.0.1:8000/docs
 
-- `frontend/public/ballistic/trajectory.mp4` (video preview)
-- `frontend/public/ballistic/preview.jpg` or `preview.png` (image preview)
+Frontend - install & run
+```bash
+cd ../frontend
+npm install
+npm run dev
+```
+Vite will print a local URL (usually `http://127.0.0.1:5173`) where the React app runs. The frontend is configured to communicate with the backend `predict` and `model` endpoints.
 
-After copying files, refresh the Ballistic view in the frontend to see the preview.
+Key API endpoints
+- `GET /` — API root with endpoint list
+- `GET /health` — Health and model status
+- `POST /predict` — Run physics simulation + ML prediction
+	- Example request body:
 
-Server-side integration (optional):
+```json
+{ "v0": 300, "angle": 45, "drag": 0.01, "dt": 0.01, "release_height": 0 }
+```
 
-- You can run the Python simulation on the server (backend) and save outputs into `backend/static/ballistic/` or serve them from an endpoint. Then either copy them to `frontend/public/ballistic/` or set up the frontend to fetch the media URL.
-- To expose a run endpoint, add a POST route that runs the script (careful: running arbitrary CPU-bound scripts from web requests has security and resource implications). Use a task queue (Celery/RQ) for long runs and return a URL when finished.
+- `POST /retrain` — Schedule model retraining (background task)
+	- Example request body: `{ "n_samples": 1200, "use_forest": true }`
+- `GET /model/info` — Model metadata and metrics
+- `DELETE /model` — Delete the current model from memory
+- `POST /upload` — Upload one or more media files; saved under `backend/static/ballistic/` and served at `/ballistic/<filename>`
 
-If you'd like, I can add an uploader in the frontend to let you upload generated previews directly from your machine, or implement a backend endpoint to run the script and stream results.
+Model & training
+- Models are managed by `backend/app/model_store.py`. On startup the app will try to load a model from `models/`. If none exists, the application will build a model using simulated data.
+- To retrain manually: use `POST /retrain` (runs in background).
+
+Media previews and simulation script
+- The frontend can download a local simulation script (for offline runs). Generated media can be placed in `frontend/public/ballistic/` to be shown by the frontend, or uploaded via the API `/upload` to be served from the backend.
+
+Development notes
+- Run backend tests (if you add tests):
+
+```bash
+cd backend
+pytest
+```
+
+- Lint and format (optional): `black`, `flake8`, `mypy` are available in `requirements.txt`.
+
+Contributing
+- Open an issue or a pull request. If adding features that change the API, update the FastAPI docstrings so the auto-generated docs stay accurate.
+
+License
+- The frontend `package.json` uses the MIT license. Add `LICENSE` file if desired.
+
+Need help?
+- If you'd like, I can:
+	- Add a `LICENSE` file and a more detailed contributing guide.
+	- Create GitHub Actions to run tests and lint on push.
+	- Help create a `Dockerfile`/`docker-compose.yml` for easier deployment.
+
+---
+If you want, I can commit this README update for you and push the changes to GitHub — tell me whether to run the git commands now.
