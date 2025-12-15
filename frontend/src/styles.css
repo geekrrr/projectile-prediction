@@ -90,6 +90,7 @@ body {
   align-items: center;
   flex-wrap: wrap;
   gap: var(--spacing-md);
+  z-index: 1000;
 }
 
 .header-left {
@@ -2708,6 +2709,7 @@ font-size: 42px;
 /* User Profile Dropdown */
 .user-profile {
   position: relative;
+  z-index: 10001; /* keep profile and its menu above page content */
 }
 
 .user-profile-btn {
@@ -2767,7 +2769,7 @@ font-size: 42px;
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   overflow: hidden;
-  z-index: 10000;
+  z-index: 100000; /* ensure the dropdown overlays visualization and canvas */
   animation: fadeInDown 0.2s ease;
 }
 
