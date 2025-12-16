@@ -16,7 +16,11 @@ import {
   Globe,
   Crosshair,
   Clock,
-  Gauge
+  Gauge,
+  Mountain,
+  Ruler,
+  Timer,
+  Wind
 } from 'lucide-react';
 import './styles.css';
 
@@ -478,17 +482,17 @@ const REAL_MISSILES = {
     name: "BGM-109 Tomahawk Block IV",
     country: "🇺🇸 USA",
     type: "Cruise",
-    description: "Long-range subsonic cruise missile with TERCOM and GPS guidance.",
+    description: "Long-range subsonic cruise missile with TERCOM and GPS guidance. Note: Cruise profile simulated as ballistic arc.",
     launchMass: 1440,      // kg (with booster)
-    emptyMass: 1200,       // kg
+    emptyMass: 540,        // kg - adjusted for simulation
     warheadMass: 450,      // kg - WDU-36/B
-    propellantMass: 0,     // Turbojet, uses JP-10 fuel
-    isp: 3500,             // Effective Isp for turbojet
-    thrustToWeight: 0.4,   // Cruise phase
-    dragCoeff: 0.35,
-    elevationAngle: 45,
+    propellantMass: 450,   // kg - fuel equivalent for simulation
+    isp: 280,              // Adjusted for ballistic sim
+    thrustToWeight: 1.6,   // Boosted for ballistic arc
+    dragCoeff: 0.25,
+    elevationAngle: 35,
     launchHeight: 0,
-    burnTime: 7200,        // 2 hours flight time
+    burnTime: 60,          // Booster burn simulation
     stages: 1,
     fuelType: "JP-10 (F415 turbojet)",
     range: "1600-2500 km",
@@ -501,17 +505,17 @@ const REAL_MISSILES = {
     name: "3M-54 Kalibr (SS-N-27)",
     country: "🇷🇺 Russia",
     type: "Cruise",
-    description: "Family of cruise missiles with land-attack and anti-ship variants.",
+    description: "Family of cruise missiles with land-attack and anti-ship variants. Note: Simulated as ballistic arc.",
     launchMass: 2300,      // kg (3M-14 variant)
-    emptyMass: 1300,       // kg
+    emptyMass: 850,        // kg - adjusted for simulation
     warheadMass: 450,      // kg - HE or nuclear
-    propellantMass: 0,
-    isp: 3200,
-    thrustToWeight: 0.5,
-    dragCoeff: 0.32,
-    elevationAngle: 40,
+    propellantMass: 1000,  // kg - fuel equivalent
+    isp: 270,
+    thrustToWeight: 1.7,
+    dragCoeff: 0.22,
+    elevationAngle: 38,
     launchHeight: 0,
-    burnTime: 5400,
+    burnTime: 70,
     stages: 1,
     fuelType: "Turbojet",
     range: "1500-2500 km",
@@ -526,15 +530,15 @@ const REAL_MISSILES = {
     type: "Cruise",
     description: "Supersonic cruise missile, joint India-Russia development. Fastest cruise missile in service.",
     launchMass: 3000,      // kg
-    emptyMass: 1800,       // kg
+    emptyMass: 1200,       // kg - adjusted for simulation
     warheadMass: 300,      // kg - semi-armor piercing
-    propellantMass: 0,
-    isp: 2000,             // Ramjet
-    thrustToWeight: 1.2,
-    dragCoeff: 0.28,
-    elevationAngle: 55,
+    propellantMass: 1500,  // kg - fuel equivalent
+    isp: 260,              // Adjusted for simulation
+    thrustToWeight: 2.0,
+    dragCoeff: 0.18,
+    elevationAngle: 50,
     launchHeight: 0,
-    burnTime: 300,
+    burnTime: 45,
     stages: 2,             // Booster + ramjet cruise
     fuelType: "Ramjet (JP-10)",
     range: "290-450 km",
@@ -547,17 +551,17 @@ const REAL_MISSILES = {
     name: "Storm Shadow/SCALP-EG",
     country: "🇬🇧🇫🇷 UK/France",
     type: "Cruise",
-    description: "Air-launched stealthy cruise missile with BROACH warhead.",
+    description: "Air-launched stealthy cruise missile with BROACH warhead. Note: Simulated as air-launched ballistic.",
     launchMass: 1300,      // kg
-    emptyMass: 820,        // kg
+    emptyMass: 480,        // kg - adjusted for simulation
     warheadMass: 450,      // kg - BROACH tandem warhead
-    propellantMass: 0,
-    isp: 3000,
-    thrustToWeight: 0.5,
-    dragCoeff: 0.25,       // Stealthy shape
-    elevationAngle: 0,     // Air-launched level
+    propellantMass: 370,   // kg - fuel equivalent
+    isp: 265,
+    thrustToWeight: 1.8,
+    dragCoeff: 0.20,       // Stealthy shape
+    elevationAngle: 25,    // Air-launched arc
     launchHeight: 10000,   // Typical aircraft altitude
-    burnTime: 3600,
+    burnTime: 35,
     stages: 1,
     fuelType: "Turbojet (TRI 60-30)",
     range: "560+ km",
@@ -572,17 +576,17 @@ const REAL_MISSILES = {
     name: "Avangard (15Yu71)",
     country: "🇷🇺 Russia",
     type: "HGV",
-    description: "Hypersonic glide vehicle deployed on UR-100N UTTKh (SS-19) or RS-28 Sarmat ICBMs.",
-    launchMass: 2000,      // kg - HGV mass
-    emptyMass: 1500,       // kg
-    warheadMass: 500,      // kg - nuclear
-    propellantMass: 0,     // Unpowered glide
-    isp: 0,                // Glider
-    thrustToWeight: 0,     // Glider
-    dragCoeff: 0.06,       // Waverider design
-    elevationAngle: 85,
+    description: "Hypersonic glide vehicle on UR-100N booster. Simulated with booster stage parameters.",
+    launchMass: 105000,    // kg - UR-100N with HGV
+    emptyMass: 5500,       // kg - post-burnout
+    warheadMass: 2000,     // kg - HGV payload
+    propellantMass: 97500, // kg - booster propellant
+    isp: 285,              // Booster Isp
+    thrustToWeight: 2.2,
+    dragCoeff: 0.10,       // Streamlined
+    elevationAngle: 87,
     launchHeight: 0,
-    burnTime: 0,
+    burnTime: 180,
     stages: 0,
     fuelType: "None (glider)",
     range: "6000+ km",
@@ -813,6 +817,7 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
   const dropdownRef = useRef(null);
+  const simulationRef = useRef(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -1053,6 +1058,10 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
 
     setTimeout(() => {
       setIsAnimating(true);
+      // Auto-scroll to simulation visualization
+      if (simulationRef.current) {
+        simulationRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }, 300);
   }, [getParams, onSaveRun, mode, selectedMissile]);
 
@@ -1108,20 +1117,27 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
     const hs = trajectoryData.map(p => p.h);
     const minX = Math.min(...xs);
     const maxX = Math.max(...xs);
-    const minH = Math.min(...hs, 0);
     const maxH = Math.max(...hs);
 
     // Calculate plot area dimensions
     const plotWidth = width - paddingLeft - paddingRight;
     const plotHeight = height - paddingTop - paddingBottom;
 
-    // Add margins to data bounds (5% on each side)
+    // Add margins to data bounds (5% on each side for X)
     const xRange = maxX - minX || 1;
-    const hRange = maxH - minH || 1;
     const plotMinX = minX - xRange * 0.05;
     const plotMaxX = maxX + xRange * 0.05;
-    const plotMinH = Math.min(minH - hRange * 0.05, -20); // Always show some below ground
-    const plotMaxH = maxH + hRange * 0.10;
+    
+    // FIXED Y-AXIS: Ground at 75% from top, underground region is bottom 25%
+    // This means: plotMaxH is at top (0%), ground (0) is at 75%, plotMinH is at bottom (100%)
+    // So the visible height above ground is 75% of plot, below ground is 25%
+    // If maxH is the max altitude, we want ground at 75% mark
+    // Total range = maxH / 0.75 (so that maxH fits in top 75%)
+    // plotMinH = -(totalRange * 0.25) = -(maxH / 0.75 * 0.25) = -maxH / 3
+    const maxHWithMargin = maxH * 1.08; // 8% margin above max altitude
+    const totalYRange = maxHWithMargin / 0.75; // Total Y range so ground is at 75%
+    const plotMinH = -totalYRange * 0.25; // Bottom 25% is underground
+    const plotMaxH = maxHWithMargin;
 
     // Calculate scales - USE FULL AVAILABLE SPACE (different scales for X and Y)
     const scaleX = plotWidth / (plotMaxX - plotMinX);
@@ -1179,16 +1195,19 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
 
     // Draw ground line (sea level)
     const groundY = toCanvasY(0);
-    ctx.strokeStyle = 'rgba(0, 255, 255, 0.6)';
+    ctx.strokeStyle = 'rgba(0, 255, 255, 0.8)';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(paddingLeft, groundY);
     ctx.lineTo(width - paddingRight, groundY);
     ctx.stroke();
     
-    // Ground fill
-    ctx.fillStyle = 'rgba(0, 255, 255, 0.1)';
-    ctx.fillRect(paddingLeft, groundY, plotWidth, height - paddingBottom - groundY + paddingBottom);
+    // Ground fill - fills the entire underground region (bottom 25% of plot)
+    const groundGrad = ctx.createLinearGradient(0, groundY, 0, height - paddingBottom);
+    groundGrad.addColorStop(0, 'rgba(0, 180, 200, 0.25)');
+    groundGrad.addColorStop(1, 'rgba(0, 100, 120, 0.4)');
+    ctx.fillStyle = groundGrad;
+    ctx.fillRect(paddingLeft, groundY, plotWidth, height - paddingBottom - groundY);
 
     // Draw full trajectory path (faded)
     ctx.strokeStyle = 'rgba(192, 192, 192, 0.25)';
@@ -1418,28 +1437,35 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
     <div className="main-grid">
       {/* Left Panel - Inputs */}
       <aside className="left-panel">
-        {/* Mode Selector */}
+        {/* Mode Selector - Pill Slider Design */}
         <div className="glass-card" style={{ marginBottom: '16px' }}>
           <h3 className="panel-title" style={{ marginBottom: '16px' }}>
             <Rocket size={20} />
             Simulation Mode
           </h3>
-          <div className="mode-selector">
+          <div className="pill-slider-container pill-slider-2">
+            <div 
+              className="pill-slider-indicator" 
+              style={{ 
+                transform: `translateX(${mode === 'manual' ? '0%' : 'calc(100% + 4px)'})`,
+                width: 'calc(50% - 7px)'
+              }} 
+            />
             <button 
-              className={`mode-btn ${mode === 'manual' ? 'active' : ''}`}
+              className={`pill-slider-btn ${mode === 'manual' ? 'active' : ''}`}
               onClick={() => setMode('manual')}
               aria-pressed={mode === 'manual'}
             >
               <Settings size={16} />
-              Manual
+              <span>Manual</span>
             </button>
             <button 
-              className={`mode-btn ${mode === 'preset' ? 'active' : ''}`}
+              className={`pill-slider-btn ${mode === 'preset' ? 'active' : ''}`}
               onClick={() => setMode('preset')}
               aria-pressed={mode === 'preset'}
             >
               <Globe size={16} />
-              Real
+              <span>Real</span>
             </button>
           </div>
         </div>
@@ -1568,7 +1594,19 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
                 type="number"
                 className="input-field"
                 value={elevationAngle}
-                onChange={(e) => setElevationAngle(Number(e.target.value))}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '' || val === '-') {
+                    setElevationAngle(val);
+                  } else {
+                    const num = parseFloat(val);
+                    if (!isNaN(num)) setElevationAngle(num);
+                  }
+                }}
+                onBlur={(e) => {
+                  const num = parseFloat(e.target.value);
+                  setElevationAngle(isNaN(num) ? 75 : Math.max(10, Math.min(90, num)));
+                }}
                 min={10}
                 max={90}
               />
@@ -1580,7 +1618,19 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
                 type="number"
                 className="input-field"
                 value={launchMass}
-                onChange={(e) => setLaunchMass(Number(e.target.value))}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '') {
+                    setLaunchMass(val);
+                  } else {
+                    const num = parseFloat(val);
+                    if (!isNaN(num) && num >= 0) setLaunchMass(num);
+                  }
+                }}
+                onBlur={(e) => {
+                  const num = parseFloat(e.target.value);
+                  setLaunchMass(isNaN(num) ? 6200 : Math.max(1000, Math.min(250000, num)));
+                }}
                 min={1000}
                 max={250000}
               />
@@ -1592,7 +1642,19 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
                 type="number"
                 className="input-field"
                 value={thrustToWeight}
-                onChange={(e) => setThrustToWeight(Number(e.target.value))}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '' || val === '.') {
+                    setThrustToWeight(val);
+                  } else {
+                    const num = parseFloat(val);
+                    if (!isNaN(num) && num >= 0) setThrustToWeight(num);
+                  }
+                }}
+                onBlur={(e) => {
+                  const num = parseFloat(e.target.value);
+                  setThrustToWeight(isNaN(num) ? 1.5 : Math.max(0.5, Math.min(5, num)));
+                }}
                 min={0.5}
                 max={5}
                 step={0.1}
@@ -1605,7 +1667,19 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
                 type="number"
                 className="input-field"
                 value={dragCoeff}
-                onChange={(e) => setDragCoeff(Number(e.target.value))}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '' || val === '.') {
+                    setDragCoeff(val);
+                  } else {
+                    const num = parseFloat(val);
+                    if (!isNaN(num) && num >= 0) setDragCoeff(num);
+                  }
+                }}
+                onBlur={(e) => {
+                  const num = parseFloat(e.target.value);
+                  setDragCoeff(isNaN(num) ? 0.2 : Math.max(0.05, Math.min(1, num)));
+                }}
                 min={0.05}
                 max={1}
                 step={0.01}
@@ -1618,7 +1692,19 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
                 type="number"
                 className="input-field"
                 value={isp}
-                onChange={(e) => setIsp(Number(e.target.value))}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === '') {
+                    setIsp(val);
+                  } else {
+                    const num = parseFloat(val);
+                    if (!isNaN(num) && num >= 0) setIsp(num);
+                  }
+                }}
+                onBlur={(e) => {
+                  const num = parseFloat(e.target.value);
+                  setIsp(isNaN(num) ? 237 : Math.max(100, Math.min(500, num)));
+                }}
                 min={100}
                 max={500}
               />
@@ -1631,8 +1717,17 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
                 className="input-field"
                 value={launchHeight}
                 onChange={(e) => {
-                  const val = Math.max(0, Math.min(50000, Number(e.target.value) || 0));
-                  setLaunchHeight(val);
+                  const val = e.target.value;
+                  if (val === '') {
+                    setLaunchHeight(val);
+                  } else {
+                    const num = parseFloat(val);
+                    if (!isNaN(num) && num >= 0) setLaunchHeight(num);
+                  }
+                }}
+                onBlur={(e) => {
+                  const num = parseFloat(e.target.value);
+                  setLaunchHeight(isNaN(num) || num < 0 ? 0 : Math.min(50000, num));
                 }}
                 min={0}
                 max={50000}
@@ -1687,7 +1782,7 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
 
       {/* Right Panel - Visualization */}
       <main className="right-panel">
-        <div className="glass-card visualization-card">
+        <div className="glass-card visualization-card" ref={simulationRef}>
           <div className="card-header">
             <h2 className="card-title">
               <Activity size={24} />
@@ -1743,28 +1838,6 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
           {/* Tab Content */}
           {activeTab === "simulation" ? (
             <>
-              {/* Live Stats during animation */}
-              {currentData && (
-                <div className="live-stats-bar">
-                  <div className="live-stat">
-                    <span className="live-label">Time</span>
-                    <span className="live-value">{(currentData.t / 60).toFixed(1)} min</span>
-                  </div>
-                  <div className="live-stat">
-                    <span className="live-label">Altitude</span>
-                    <span className="live-value">{currentData.h.toFixed(0)} km</span>
-                  </div>
-                  <div className="live-stat">
-                    <span className="live-label">Velocity</span>
-                    <span className="live-value">Mach {(currentData.v / 340).toFixed(1)}</span>
-                  </div>
-                  <div className="live-stat">
-                    <span className="live-label">Mass</span>
-                    <span className="live-value">{(currentData.m / 1000).toFixed(1)} t</span>
-                  </div>
-                </div>
-              )}
-
               {/* Impact Result */}
               {stats && animationIndex >= (trajectoryData?.length || 0) - 1 && (
                 <div className="impact-result-new">
@@ -1780,22 +1853,22 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
               {stats && (
                 <div className="stats-grid-new">
                   <div className="stat-box">
-                    <div className="stat-icon-new">🔝</div>
+                    <div className="stat-icon-new"><Mountain size={24} style={{color: '#a78bfa'}} /></div>
                     <div className="stat-label-new">Max Altitude</div>
                     <div className="stat-value-new">{stats.maxHeight.toFixed(0)} km</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-icon-new">📏</div>
+                    <div className="stat-icon-new"><Ruler size={24} style={{color: '#60a5fa'}} /></div>
                     <div className="stat-label-new">Range</div>
                     <div className="stat-value-new">{stats.range.toFixed(0)} km</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-icon-new">⏱️</div>
+                    <div className="stat-icon-new"><Timer size={24} style={{color: '#f97316'}} /></div>
                     <div className="stat-label-new">Flight Time</div>
                     <div className="stat-value-new">{(stats.flightTime / 60).toFixed(1)} min</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-icon-new">💨</div>
+                    <div className="stat-icon-new"><Wind size={24} style={{color: '#22c55e'}} /></div>
                     <div className="stat-label-new">Impact Velocity</div>
                     <div className="stat-value-new">Mach {stats.impactMach.toFixed(1)}</div>
                   </div>

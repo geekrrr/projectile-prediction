@@ -14,6 +14,10 @@ import {
   Database,
   Menu,
   X,
+  Mountain,
+  Timer,
+  Hash,
+  Ruler,
 } from "lucide-react";
 import "./styles.css";
 import Analytics from './analytics'
@@ -29,9 +33,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 const PROJECTILE_OBJECTS = {
   missile: { name: 'Rocket', emoji: '🚀', size: 24, rotation: true },
   ball: { name: 'Ball', emoji: '⚽', size: 20, rotation: false },
-  plane: { name: 'Plane', emoji: '✈️', size: 28, rotation: true },
   bomb: { name: 'Bomb', emoji: '💣', size: 20, rotation: false },
-  star: { name: 'Star', emoji: '⭐', size: 22, rotation: false },
   stone: { name: 'Rock', emoji: '🪨', size: 20, rotation: false }
 };
 
@@ -50,6 +52,9 @@ export default function App() {
 
   // Mobile menu state
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // History state - must be declared before useEffect that uses it
+  const [history, setHistory] = useState([]);
 
   // Check for existing session
   useEffect(() => {
@@ -102,7 +107,6 @@ export default function App() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [history, setHistory] = useState([]);
   const [activeTab, setActiveTab] = useState("simulation");
 
   // view state
@@ -116,6 +120,7 @@ export default function App() {
   const [animationSpeed, setAnimationSpeed] = useState(savedSettings?.defaultAnimationSpeed || 'normal');
 
   const canvasRef = useRef(null);
+  const simulationRef = useRef(null);
 
   // Save history to localStorage whenever it changes
   useEffect(() => {
@@ -213,6 +218,10 @@ export default function App() {
 
       setTimeout(() => {
         setIsAnimating(true);
+        // Auto-scroll to simulation area
+        if (simulationRef.current) {
+          simulationRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }, 300);
 
     } catch (e) {
@@ -645,7 +654,19 @@ export default function App() {
                   type="number"
                   className="input-field"
                   value={v0}
-                  onChange={(e) => setV0(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || val === '-') {
+                      setV0(val);
+                    } else {
+                      const num = parseFloat(val);
+                      if (!isNaN(num)) setV0(num);
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const num = parseFloat(e.target.value);
+                    setV0(isNaN(num) ? 300 : Math.max(1, num));
+                  }}
                 />
               </div>
 
@@ -657,7 +678,19 @@ export default function App() {
                   min="-90"
                   max="90"
                   value={angle}
-                  onChange={(e) => setAngle(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || val === '-') {
+                      setAngle(val);
+                    } else {
+                      const num = parseFloat(val);
+                      if (!isNaN(num)) setAngle(num);
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const num = parseFloat(e.target.value);
+                    setAngle(isNaN(num) ? 45 : Math.max(-90, Math.min(90, num)));
+                  }}
                 />
               </div>
 
@@ -668,7 +701,19 @@ export default function App() {
                   step="0.001"
                   className="input-field"
                   value={drag}
-                  onChange={(e) => setDrag(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || val === '.') {
+                      setDrag(val);
+                    } else {
+                      const num = parseFloat(val);
+                      if (!isNaN(num) && num >= 0) setDrag(num);
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const num = parseFloat(e.target.value);
+                    setDrag(isNaN(num) || num < 0 ? 0.01 : num);
+                  }}
                 />
               </div>
 
@@ -679,7 +724,19 @@ export default function App() {
                   step="0.001"
                   className="input-field"
                   value={dt}
-                  onChange={(e) => setDt(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '' || val === '.') {
+                      setDt(val);
+                    } else {
+                      const num = parseFloat(val);
+                      if (!isNaN(num) && num > 0) setDt(num);
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const num = parseFloat(e.target.value);
+                    setDt(isNaN(num) || num <= 0 ? 0.01 : num);
+                  }}
                 />
               </div>
 
@@ -693,8 +750,17 @@ export default function App() {
                   className="input-field"
                   value={releaseHeight}
                   onChange={(e) => {
-                    const val = Math.max(0, Math.min(10000, parseFloat(e.target.value) || 0));
-                    setReleaseHeight(val);
+                    const val = e.target.value;
+                    if (val === '') {
+                      setReleaseHeight(val);
+                    } else {
+                      const num = parseFloat(val);
+                      if (!isNaN(num) && num >= 0) setReleaseHeight(num);
+                    }
+                  }}
+                  onBlur={(e) => {
+                    const num = parseFloat(e.target.value);
+                    setReleaseHeight(isNaN(num) || num < 0 ? 0 : Math.min(10000, num));
                   }}
                   placeholder="0"
                 />
@@ -762,7 +828,7 @@ export default function App() {
 
           {/* Right Panel - Visualization */}
           <main className="right-panel">
-            <div className="glass-card visualization-card">
+            <div className="glass-card visualization-card" ref={simulationRef}>
               <div className="card-header">
                 <h2 className="card-title">
                   <Activity size={24} />
@@ -833,22 +899,22 @@ export default function App() {
                   {stats && (
                     <div className="stats-grid-new">
                       <div className="stat-box">
-                        <div className="stat-icon-new">🔝</div>
+                        <div className="stat-icon-new"><Mountain size={24} style={{color: '#a78bfa'}} /></div>
                         <div className="stat-label-new">Max Height</div>
                         <div className="stat-value-new">{stats.maxHeight?.toFixed(1)} m</div>
                       </div>
                       <div className="stat-box">
-                        <div className="stat-icon-new">📏</div>
+                        <div className="stat-icon-new"><Ruler size={24} style={{color: '#60a5fa'}} /></div>
                         <div className="stat-label-new">Max Range</div>
                         <div className="stat-value-new">{stats.maxRange?.toFixed(1)} m</div>
                       </div>
                       <div className="stat-box">
-                        <div className="stat-icon-new">⏱️</div>
+                        <div className="stat-icon-new"><Timer size={24} style={{color: '#f97316'}} /></div>
                         <div className="stat-label-new">Flight Time</div>
                         <div className="stat-value-new">{stats.flightTime?.toFixed(2)} s</div>
                       </div>
                       <div className="stat-box">
-                        <div className="stat-icon-new">🎯</div>
+                        <div className="stat-icon-new"><Hash size={24} style={{color: '#22c55e'}} /></div>
                         <div className="stat-label-new">Data Points</div>
                         <div className="stat-value-new">{stats.trajectoryPoints}</div>
                       </div>
@@ -949,7 +1015,7 @@ export default function App() {
           }}
         />
       ) : currentView === 'about' ? (
-        <About />
+        <About onNavigate={handleNavigation} />
       ) : null}
     </div>
   );

@@ -413,7 +413,7 @@ export default function Auth({ onLogin }) {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="auth-form">
+            <form onSubmit={handleSubmit} className="auth-form" autoComplete="off">
               {/* Username */}
               <div className={`auth-field ${focusedField === 'username' ? 'focused' : ''}`}>
                 <label>Username</label>
@@ -426,7 +426,8 @@ export default function Auth({ onLogin }) {
                     onFocus={() => setFocusedField('username')}
                     onBlur={() => setFocusedField(null)}
                     placeholder="Enter your username"
-                    autoComplete="username"
+                    autoComplete="off"
+                    name="ballistic-username"
                   />
                 </div>
               </div>
@@ -444,7 +445,8 @@ export default function Auth({ onLogin }) {
                       onFocus={() => setFocusedField('email')}
                       onBlur={() => setFocusedField(null)}
                       placeholder="Enter your email"
-                      autoComplete="email"
+                      autoComplete="off"
+                      name="ballistic-email"
                     />
                   </div>
                 </div>

@@ -8,11 +8,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  BarChart,
-  Bar,
   CartesianGrid,
-  ScatterChart,
-  Scatter,
   ReferenceLine,
   AreaChart,
   Area,
@@ -34,6 +30,10 @@ import {
   Clock,
   Rocket,
   Crosshair,
+  Mountain,
+  Timer,
+  Hash,
+  Compass,
 } from "lucide-react";
 
 /**
@@ -47,7 +47,7 @@ const SAMPLE_HISTORY = [];
 // Theme Colors - Improved for better visualization
 const COLOR_PHYSICS = "#ff6b9d";
 const COLOR_ML = "#4dabf7";
-const COLOR_SUCCESS = "#ffa94d";
+const COLOR_SUCCESS = "#eab308";
 const COLOR_WARNING = "#51cf66";
 const COLOR_ACCENT = "#b197fc";
 
@@ -119,18 +119,53 @@ export default function Analytics({ currentRun = null, history = null }) {
 
   // History data for charts - use sequential numbering for clean labels
   const historyData = useMemo(() => {
+    return hist.map((r, idx) => {
+      const physics = r.impact_physics ?? r.stats?.maxRange ?? 0;
+      const ml = r.impact_ml ?? r.impact_physics ?? r.stats?.maxRange ?? 0;
+      const error = ml - physics;
+      const errorPctValue = physics ? (error / physics) * 100 : 0;
+      
+      return {
+        id: idx + 1,
+        name: `Run ${idx + 1}`,
+        physics,
+        ml,
+        error,
+        errorPct: errorPctValue,
+        maxHeight: r.stats?.maxHeight ?? 0,
+        flightTime: r.stats?.flightTime ?? 0,
+        angle: r.angle ?? 45,
+        v0: r.v0 ?? 300,
+        // Normalized range (0-100 scale for comparison)
+        rangeKm: physics / 1000,
+      };
+    });
+  }, [hist]);
+  
+  // Parameter correlation data - shows how parameters affect range
+  const parameterCorrelation = useMemo(() => {
     return hist.map((r, idx) => ({
       id: idx + 1,
-      name: `Run ${idx + 1}`,
-      physics: r.impact_physics ?? r.stats?.maxRange ?? 0,
-      ml: r.impact_ml ?? r.impact_physics ?? r.stats?.maxRange ?? 0,
-      error: (r.impact_ml ?? 0) - (r.impact_physics ?? 0),
-      maxHeight: r.stats?.maxHeight ?? 0,
-      flightTime: r.stats?.flightTime ?? 0,
       angle: r.angle ?? 45,
       v0: r.v0 ?? 300,
+      range: (r.impact_physics ?? r.stats?.maxRange ?? 0) / 1000, // in km
+      maxHeight: (r.stats?.maxHeight ?? 0) / 1000, // in km
+      flightTime: r.stats?.flightTime ?? 0,
     }));
   }, [hist]);
+
+  // Statistics summary
+  const statsSummary = useMemo(() => {
+    if (historyData.length === 0) return null;
+    
+    const errors = historyData.map(d => d.errorPct);
+    const avgError = errors.reduce((a, b) => a + b, 0) / errors.length;
+    const maxError = Math.max(...errors.map(Math.abs));
+    const ranges = historyData.map(d => d.physics);
+    const avgRange = ranges.reduce((a, b) => a + b, 0) / ranges.length;
+    
+    return { avgError, maxError, avgRange };
+  }, [historyData]);
 
   // Angle vs Range scatter data
   const angleRangeData = useMemo(() => {
@@ -320,31 +355,38 @@ export default function Analytics({ currentRun = null, history = null }) {
           </div>
         </div>
         
-        {/* Data Type Filter Tabs */}
-        <div className="analytics-type-tabs">
+        {/* Data Type Filter Tabs - Pill Slider Design */}
+        <div className="pill-slider-container">
+          <div 
+            className="pill-slider-indicator" 
+            style={{ 
+              transform: `translateX(${dataType === 'all' ? '0' : dataType === 'projectile' ? '100%' : '200%'})`,
+              width: 'calc((100% / 3) - 8px)'
+            }} 
+          />
           <button 
-            className={`type-tab ${dataType === 'all' ? 'active' : ''}`}
+            className={`pill-slider-btn ${dataType === 'all' ? 'active' : ''}`}
             onClick={() => setDataType('all')}
           >
             <BarChart3 size={16} />
-            All Runs
-            <span className="tab-count">{allHistory.length}</span>
+            <span>All Runs</span>
+            <span className="pill-count">{allHistory.length}</span>
           </button>
           <button 
-            className={`type-tab ${dataType === 'projectile' ? 'active' : ''}`}
+            className={`pill-slider-btn ${dataType === 'projectile' ? 'active' : ''}`}
             onClick={() => setDataType('projectile')}
           >
             <Crosshair size={16} />
-            Projectile
-            <span className="tab-count">{projectileCount}</span>
+            <span>Projectile</span>
+            <span className="pill-count">{projectileCount}</span>
           </button>
           <button 
-            className={`type-tab ${dataType === 'ballistic' ? 'active' : ''}`}
+            className={`pill-slider-btn ${dataType === 'ballistic' ? 'active' : ''}`}
             onClick={() => setDataType('ballistic')}
           >
             <Rocket size={16} />
-            Ballistic
-            <span className="tab-count">{ballisticCount}</span>
+            <span>Ballistic</span>
+            <span className="pill-count">{ballisticCount}</span>
           </button>
         </div>
       </div>
@@ -409,28 +451,28 @@ export default function Analytics({ currentRun = null, history = null }) {
           <h4 className="analytics-section-title">Current Run Statistics</h4>
           <div className="metrics-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
             <div className="glass-card" style={{ padding: '20px', textAlign: 'center' }}>
-              <div style={{ fontSize: '28px', marginBottom: '8px' }}>🔝</div>
+              <div style={{ marginBottom: '8px' }}><Mountain size={28} style={{color: '#8ddbffff'}} /></div>
               <div className="metric-label">Max Height</div>
               <div style={{ fontSize: '24px', fontWeight: '700', color: 'white' }}>
                 {cur.stats.maxHeight?.toFixed(1)} m
               </div>
             </div>
             <div className="glass-card" style={{ padding: '20px', textAlign: 'center' }}>
-              <div style={{ fontSize: '28px', marginBottom: '8px' }}>⏱️</div>
+              <div style={{ marginBottom: '8px' }}><Timer size={28} style={{color: '#fda05dff'}} /></div>
               <div className="metric-label">Flight Time</div>
               <div style={{ fontSize: '24px', fontWeight: '700', color: 'white' }}>
                 {cur.stats.flightTime?.toFixed(2)} s
               </div>
             </div>
             <div className="glass-card" style={{ padding: '20px', textAlign: 'center' }}>
-              <div style={{ fontSize: '28px', marginBottom: '8px' }}>🎯</div>
+              <div style={{ marginBottom: '8px' }}><Hash size={28} style={{color: '#55ef8dff'}} /></div>
               <div className="metric-label">Data Points</div>
               <div style={{ fontSize: '24px', fontWeight: '700', color: 'white' }}>
                 {cur.stats.trajectoryPoints?.toLocaleString()}
               </div>
             </div>
             <div className="glass-card" style={{ padding: '20px', textAlign: 'center' }}>
-              <div style={{ fontSize: '28px', marginBottom: '8px' }}>📐</div>
+              <div style={{ marginBottom: '8px' }}><Compass size={28} style={{color: '#eab308'}} /></div>
               <div className="metric-label">Launch Angle</div>
               <div style={{ fontSize: '24px', fontWeight: '700', color: 'white' }}>
                 {cur.angle ?? 45}°
@@ -444,28 +486,30 @@ export default function Analytics({ currentRun = null, history = null }) {
       <div className="analytics-section">
         <h4 className="analytics-section-title">Visual Analysis</h4>
         <div className="chart-grid">
-        {/* Impact Comparison Over Time */}
+        {/* ML Accuracy Over Time - Percentage Error */}
         <div className="glass-card chart-card">
           <h3 className="chart-title">
             <TrendingUp size={20} />
-            Impact Distance History
+            ML Accuracy (% Error Over Time)
           </h3>
           <div className="chart-container">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={historyData}>
                 <defs>
-                  <linearGradient id="colorPhysics" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={COLOR_PHYSICS} stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor={COLOR_PHYSICS} stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorML" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={COLOR_ML} stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor={COLOR_ML} stopOpacity={0}/>
+                  <linearGradient id="colorErrorPct" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={COLOR_WARNING} stopOpacity={0.4}/>
+                    <stop offset="95%" stopColor={COLOR_WARNING} stopOpacity={0.05}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                 <XAxis dataKey="name" stroke="rgba(255,255,255,0.4)" fontSize={12} tickLine={false} />
-                <YAxis stroke="rgba(255,255,255,0.4)" fontSize={12} tickLine={false} />
+                <YAxis 
+                  stroke="rgba(255,255,255,0.4)" 
+                  fontSize={12} 
+                  tickLine={false} 
+                  tickFormatter={(v) => `${v.toFixed(1)}%`}
+                  domain={['auto', 'auto']}
+                />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: 'rgba(30, 30, 50, 0.95)', 
@@ -477,13 +521,38 @@ export default function Analytics({ currentRun = null, history = null }) {
                     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
                   }}
                   labelStyle={{ color: 'rgba(255,255,255,0.7)', marginBottom: '8px', fontWeight: 500 }}
-                  itemStyle={{ color: '#fff', padding: '4px 0' }}
+                  formatter={(value, name) => {
+                    if (name === 'errorPct') return [`${value.toFixed(4)}%`, 'Error'];
+                    return [value.toFixed(2), name];
+                  }}
                 />
-                <Legend />
-                <Area type="monotone" dataKey="physics" stroke={COLOR_PHYSICS} fillOpacity={1} fill="url(#colorPhysics)" name="Physics" strokeWidth={2} />
-                <Area type="monotone" dataKey="ml" stroke={COLOR_ML} fillOpacity={1} fill="url(#colorML)" name="ML" strokeWidth={2} />
+                <ReferenceLine y={0} stroke="rgba(255,255,255,0.5)" strokeDasharray="5 5" label={{ value: 'Perfect', fill: 'rgba(255,255,255,0.5)', fontSize: 10 }} />
+                <ReferenceLine y={2} stroke={COLOR_SUCCESS} strokeDasharray="3 3" strokeOpacity={0.5} />
+                <ReferenceLine y={-2} stroke={COLOR_SUCCESS} strokeDasharray="3 3" strokeOpacity={0.5} />
+                <Area 
+                  type="monotone" 
+                  dataKey="errorPct" 
+                  stroke={COLOR_WARNING} 
+                  fillOpacity={1} 
+                  fill="url(#colorErrorPct)" 
+                  name="errorPct" 
+                  strokeWidth={2}
+                  dot={{ fill: '#0ab30fff', r: 3 }}
+                  activeDot={{ r: 5, fill: '#0ab30fff' }}
+                />
               </AreaChart>
             </ResponsiveContainer>
+          </div>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            gap: '20px', 
+            marginTop: '12px',
+            fontSize: '11px',
+            color: 'rgba(255,255,255,0.5)'
+          }}>
+            <span>━━ ±2% tolerance zone</span>
+            <span>┄┄ Perfect accuracy (0%)</span>
           </div>
         </div>
 
@@ -491,14 +560,25 @@ export default function Analytics({ currentRun = null, history = null }) {
         <div className="glass-card chart-card">
           <h3 className="chart-title">
             <Target size={20} />
-            Prediction Error Trend
+            Prediction Error Trend (Absolute)
           </h3>
           <div className="chart-container">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={historyData}>
+              <AreaChart data={historyData}>
+                <defs>
+                  <linearGradient id="colorErrorOrange" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="1%" stopColor="#eab308" stopOpacity={0.4}/>
+                    <stop offset="70%" stopColor="#eab308" stopOpacity={0.05}/>
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
                 <XAxis dataKey="name" stroke="rgba(255,255,255,0.4)" fontSize={12} tickLine={false} />
-                <YAxis stroke="rgba(255,255,255,0.4)" fontSize={12} tickLine={false} />
+                <YAxis 
+                  stroke="rgba(255,255,255,0.4)" 
+                  fontSize={12} 
+                  tickLine={false}
+                  label={{ value: 'Error (m)', angle: -90, position: 'insideLeft', fill: 'rgba(255,255,255,0.5)', fontSize: 10 }}
+                />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: 'rgba(30, 30, 50, 0.95)', 
@@ -513,18 +593,31 @@ export default function Analytics({ currentRun = null, history = null }) {
                   itemStyle={{ color: '#fff', padding: '4px 0' }}
                   formatter={(value) => [`${value.toFixed(2)} m`, 'Error']}
                 />
-                <ReferenceLine y={0} stroke="rgba(255,255,255,0.3)" strokeDasharray="5 5" />
-                <Line 
+                <ReferenceLine y={0} stroke="rgba(255,255,255,0.5)" strokeWidth={1} />
+                <ReferenceLine y={10} stroke="rgba(255,255,255,0.2)" strokeDasharray="3 3" />
+                <ReferenceLine y={-10} stroke="rgba(255,255,255,0.2)" strokeDasharray="3 3" />
+                <Area 
                   type="monotone" 
-                  dataKey="error" 
-                  stroke={COLOR_WARNING} 
-                  strokeWidth={2} 
-                  dot={{ fill: COLOR_WARNING, r: 4 }}
-                  activeDot={{ r: 6 }}
-                  name="ML - Physics Error"
+                  dataKey="error"
+                  stroke="#eab308"
+                  fill="url(#colorErrorOrange)"
+                  strokeWidth={2}
+                  name="Error"
+                  dot={{ fill: '#f97316', r: 4 }}
+                  activeDot={{ r: 6, fill: '#f97316' }}
                 />
-              </LineChart>
+              </AreaChart>
             </ResponsiveContainer>
+          </div>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            gap: '20px', 
+            marginTop: '12px',
+            fontSize: '11px',
+            color: 'rgba(255,255,255,0.5)'
+          }}>
+            <span>━━ ±10m acceptable range</span>
           </div>
         </div>
       </div>
