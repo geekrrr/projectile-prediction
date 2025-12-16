@@ -30,11 +30,10 @@ MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/ballistic", StaticFiles(directory=str(MEDIA_DIR)), name="ballistic")
 
 # CORS - Configure for production
-# Update allowed_origins after deploying frontend to Vercel
 allowed_origins = [
     "http://localhost:5173",  # Local development
     "http://localhost:3000",  # Alternative local port
-    # Add your Vercel URL after deployment: "https://your-app.vercel.app"
+    "https://ballistix.vercel.app",  # Production frontend on Vercel
 ]
 
 # Check for environment variable for production origins
