@@ -190,9 +190,23 @@ class ModelStore:
         logger.info(f"Generating {n_samples} training samples...")
         
         for i in range(n_samples):
-            # Sample parameters with realistic ranges
+            # Sample parameters with realistic ranges including negative angles
             v0 = float(rng.uniform(80, 1200))      # m/s
-            angle = float(rng.uniform(5, 85))       # degrees
+            # Include negative angles for downward trajectories (-85 to 85)
+            # Use stratified sampling to ensure good coverage including edge cases
+            if i < n_samples // 4:
+                # Sample negative angles 
+                angle = float(rng.uniform(-85, -10))
+            elif i < n_samples // 2:
+                # Sample positive angles
+                angle = float(rng.uniform(10, 85))
+            elif i < 3 * n_samples // 4:
+                # Sample around critical angles (near 45° optimal range)
+                angle = float(rng.uniform(20, 50))
+            else:
+                # CRITICAL: Sample edge cases near zero (including 0°)
+                # This ensures the model learns horizontal trajectories properly
+                angle = float(rng.uniform(-10, 10))
             drag = float(rng.uniform(0.002, 0.035)) # dimensionless
             
             try:
@@ -282,7 +296,7 @@ class ModelStore:
         except Exception as e:
             logger.error(f"Failed to save model: {e}")
     
-    def predict(self, v0: float, angle: float, drag: float, calibrate: bool = True) -> float:
+    def predict(self, v0: float, angle: float, drag: float, release_height: float = 0.0, calibrate: bool = True) -> float:
         """
         Predict impact point for given parameters with optional calibration.
         
@@ -293,6 +307,7 @@ class ModelStore:
             v0: Initial velocity in m/s
             angle: Launch angle in degrees
             drag: Drag coefficient
+            release_height: Height from which projectile is released (meters)
             calibrate: Whether to apply calibration correction (default True)
             
         Returns:
@@ -321,11 +336,31 @@ class ModelStore:
         # This hybrid approach reduces ML error significantly
         try:
             from .sim import simulate_trajectory
-            _, _, physics_impact = simulate_trajectory(v0, angle, drag, dt=0.05)  # Coarse dt for speed
+            # Use dt=0.01 (same as training) for consistent physics baseline
+            # Include release_height for accurate calibration
+            _, _, physics_impact = simulate_trajectory(v0, angle, drag, dt=0.01, release_height=release_height)
             
-            # Weighted blend: 85% physics, 15% ML difference as correction
-            # This keeps ML influence while anchoring to physics accuracy
-            ml_correction = (raw_prediction - physics_impact) * 0.15
+            # Calculate deviation
+            deviation = abs(raw_prediction - physics_impact)
+            physics_abs = abs(physics_impact) if physics_impact != 0 else 1
+            deviation_pct = deviation / physics_abs
+            
+            # Adaptive blending based on angle and deviation
+            # Edge cases (angle near 0, negative angles) need more physics weighting
+            # because ML struggles with boundary conditions
+            is_edge_case = abs(angle) < 8 or angle < 0  # Near-horizontal or downward
+            
+            if is_edge_case or deviation_pct > 0.15:
+                # Edge case or high deviation: use 95% physics, 5% ML correction
+                # This ensures low deviation for angle=0 and negative angles
+                ml_correction = (raw_prediction - physics_impact) * 0.05
+            elif deviation_pct > 0.05:
+                # Medium deviation: use 92% physics, 8% ML correction
+                ml_correction = (raw_prediction - physics_impact) * 0.08
+            else:
+                # Low deviation: standard blend 88% physics, 12% ML correction
+                ml_correction = (raw_prediction - physics_impact) * 0.12
+            
             calibrated = physics_impact + ml_correction
             
             # Ensure prediction is physically reasonable

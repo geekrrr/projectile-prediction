@@ -29,10 +29,22 @@ MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 # Mount static files at /ballistic
 app.mount("/ballistic", StaticFiles(directory=str(MEDIA_DIR)), name="ballistic")
 
-# CORS - allow from frontend dev server
+# CORS - Configure for production
+# Update allowed_origins after deploying frontend to Vercel
+allowed_origins = [
+    "http://localhost:5173",  # Local development
+    "http://localhost:3000",  # Alternative local port
+    # Add your Vercel URL after deployment: "https://your-app.vercel.app"
+]
+
+# Check for environment variable for production origins
+import os
+if production_origin := os.getenv("FRONTEND_URL"):
+    allowed_origins.append(production_origin)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
+    allow_origins=allowed_origins if allowed_origins else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -135,16 +147,16 @@ def predict(p: PredictIn):
         logger.info(f"Running simulation: v0={p.v0}, angle={p.angle}, drag={p.drag}, release_height={p.release_height}")
         xs, ys, impact = simulate_trajectory(p.v0, p.angle, p.drag, dt=p.dt, release_height=p.release_height)
         
-        # Calculate additional statistics
-        max_height = max(ys) if ys else 0
-        max_range = xs[-1] if xs else 0
-        flight_time = len(xs) * p.dt
+        # Calculate additional statistics (ensure native Python floats)
+        max_height = float(max(ys)) if ys else 0.0
+        max_range = float(xs[-1]) if xs else 0.0
+        flight_time = float(len(xs) * p.dt)
         
         # Try ML prediction
         ml_pred = None
         try:
             if MODEL_STORE.model is not None:
-                ml_pred = MODEL_STORE.predict(p.v0, p.angle, p.drag)
+                ml_pred = float(MODEL_STORE.predict(p.v0, p.angle, p.drag, release_height=p.release_height))
                 logger.info(f"ML prediction: {ml_pred}")
             else:
                 logger.warning("ML model not loaded, skipping ML prediction")
@@ -155,7 +167,7 @@ def predict(p: PredictIn):
         return PredictOut(
             xs=xs,
             ys=ys,
-            impact_physics=impact,
+            impact_physics=float(impact),
             impact_ml=ml_pred,
             max_height=max_height,
             max_range=max_range,

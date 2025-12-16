@@ -335,13 +335,16 @@ def simulate_trajectory(
         
     Returns:
         Tuple of (xs, ys, impact_x) where:
-            - xs: List of x-coordinates
-            - ys: List of y-coordinates  
+            - xs: List of x-coordinates (native Python floats)
+            - ys: List of y-coordinates (native Python floats)
             - impact_x: X-coordinate at impact
     """
     simulator = TrajectorySimulator()
     xs, ys, impact_x, stats = simulator.simulate(v0, angle_deg, drag_coeff, dt, max_steps, release_height)
-    return xs, ys, impact_x
+    # Convert numpy float64 to native Python floats for JSON serialization
+    xs = [float(x) for x in xs]
+    ys = [float(y) for y in ys]
+    return xs, ys, float(impact_x)
 
 
 def simulate_trajectory_with_stats(
