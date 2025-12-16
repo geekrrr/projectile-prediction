@@ -367,14 +367,6 @@ Copyright (c) 2025 Group 1 - CSVTU
 
 ---
 
-## 👥 Team
-
-**Group 1 - CSVTU**
-
-Built with ❤️ for trajectory simulation and analysis.
-
----
-
 <div align="center">
 
 ### 🌟 Star this repo if you found it useful!
