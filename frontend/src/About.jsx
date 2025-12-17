@@ -101,13 +101,24 @@ export default function About({ onNavigate }) {
     <div className="landing-page">
       {/* Hero Section */}
       <section className="landing-hero">
-        {/* Animated Projectiles */}
-        <div className="hero-projectiles">
-          <div className="projectile projectile-1"></div>
-          <div className="projectile projectile-2"></div>
-          <div className="projectile projectile-3"></div>
-          <div className="projectile projectile-4"></div>
-          <div className="projectile projectile-5"></div>
+        {/* Animated Stars Background */}
+        <div className="hero-stars">
+          <div className="star star-1"></div>
+          <div className="star star-2"></div>
+          <div className="star star-3"></div>
+          <div className="star star-4"></div>
+          <div className="star star-5"></div>
+          <div className="star star-6"></div>
+          <div className="star star-7"></div>
+          <div className="star star-8"></div>
+          <div className="star star-9"></div>
+          <div className="star star-10"></div>
+          <div className="star star-11"></div>
+          <div className="star star-12"></div>
+          {/* Comets passing by */}
+          <div className="comet comet-1"></div>
+          <div className="comet comet-2"></div>
+          <div className="comet comet-3"></div>
         </div>
         <div className="hero-glow-orb"></div>
         <div className="hero-content">
@@ -340,7 +351,7 @@ export default function About({ onNavigate }) {
                 and machine learning for accurate ballistic analysis.
               </p>
               <div className="footer-social">
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/geekrrr/Ballistic_MPI" target="_blank" rel="noopener noreferrer">
                   <Github size={18} />
                 </a>
                 <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
@@ -379,11 +390,6 @@ export default function About({ onNavigate }) {
           
           <div className="footer-bottom">
             <p>© {new Date().getFullYear()} Ballistic Studio. All rights reserved.</p>
-            <div className="footer-made">
-              <span>Made with</span>
-              <Heart size={14} className="heart-icon" />
-              <span>using React & FastAPI</span>
-            </div>
           </div>
         </div>
       </footer>
