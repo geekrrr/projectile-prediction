@@ -367,6 +367,8 @@ body {
   min-height: 600px;
   display: flex;
   flex-direction: column;
+  border-radius: 24px; /* Rounded corners for ballistic simulation card */
+  overflow: hidden; /* Ensure content respects border radius */
 }
 
 .card-header {
@@ -448,6 +450,7 @@ body {
   height: 400px;
   position: relative;
   z-index: 1;
+  border-radius: var(--radius-md);
 }
 
 /* Placeholder */
@@ -1604,6 +1607,9 @@ font-size: 42px;
   margin-top: -20px;
   overflow-x: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* ========== HERO SECTION ========== */
@@ -1879,8 +1885,7 @@ font-size: 42px;
 /* ========== FEATURES SECTION ========== */
 .landing-features {
   padding: 100px 40px;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.4) 100%);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
 }
 
 .features-container {
@@ -1896,12 +1901,12 @@ font-size: 42px;
 .section-badge {
   display: inline-block;
   padding: 6px 14px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.3);
   border-radius: 50px;
   font-size: 12px;
   font-weight: 700;
-  color: #fff;
+  color: #a5b4fc;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 16px;
@@ -1951,31 +1956,30 @@ font-size: 42px;
 
 .feature-card-landing {
   padding: 32px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.6) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
   border-radius: 16px;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .feature-card-landing:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-color: rgba(99, 102, 241, 0.4);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(51, 65, 85, 0.8) 100%);
 }
 
 .feature-icon-landing {
   width: 56px;
   height: 56px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.3);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: #a5b4fc;
   margin-bottom: 20px;
 }
 
@@ -1996,15 +2000,130 @@ font-size: 42px;
 /* ========== TECH SECTION ========== */
 .landing-tech {
   padding: 80px 40px;
-  background: linear-gradient(135deg, #5a3d7a 0%, #764ba2 50%, #667eea 100%);
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 }
 
 .tech-container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
   text-align: center;
 }
 
+.section-desc-light {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 500px;
+  margin: 12px auto 0;
+  line-height: 1.6;
+}
+
+/* New Tech Cards Grid - 3 Column Layout */
+.tech-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.tech-card {
+  padding: 28px;
+  border-radius: 16px;
+  text-align: left;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.tech-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Frontend Card - Blue tones */
+.tech-card-frontend {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.1) 100%);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.tech-card-frontend:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(37, 99, 235, 0.15) 100%);
+}
+
+.tech-card-frontend .tech-card-header {
+  color: #60a5fa;
+}
+
+/* Backend Card - Green/Teal tones */
+.tech-card-backend {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.tech-card-backend:hover {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.15) 100%);
+}
+
+.tech-card-backend .tech-card-header {
+  color: #34d399;
+}
+
+/* Tools Card - Purple/Violet tones */
+.tech-card-tools {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(109, 40, 217, 0.1) 100%);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.tech-card-tools:hover {
+  border-color: rgba(139, 92, 246, 0.5);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(109, 40, 217, 0.15) 100%);
+}
+
+.tech-card-tools .tech-card-header {
+  color: #a78bfa;
+}
+
+.tech-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.tech-card-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.tech-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tech-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tech-item-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.tech-item-desc {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Legacy tech badges - keep for backward compatibility */
 .tech-badges-grid {
   display: flex;
   flex-wrap: wrap;
@@ -2048,8 +2167,7 @@ font-size: 42px;
 /* ========== CAPABILITIES SECTION ========== */
 .landing-capabilities {
   padding: 100px 40px;
-  background: linear-gradient(135deg, rgba(118, 75, 162, 0.4) 0%, rgba(102, 126, 234, 0.3) 100%);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 }
 
 .capabilities-container {
@@ -2071,32 +2189,31 @@ font-size: 42px;
 
 .capability-card {
   padding: 28px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.5) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.15);
   border-radius: 16px;
   text-align: center;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
 }
 
 .capability-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3);
+  border-color: rgba(99, 102, 241, 0.3);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(51, 65, 85, 0.7) 100%);
 }
 
 .capability-icon {
   width: 60px;
   height: 60px;
   margin: 0 auto 16px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.25);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: #a5b4fc;
 }
 
 .capability-card h4 {
@@ -2203,7 +2320,7 @@ font-size: 42px;
 /* ========== CTA SECTION ========== */
 .landing-cta {
   padding: 100px 40px;
-  background: linear-gradient(135deg, #5a3d7a 0%, #667eea 100%);
+  background: linear-gradient(135deg, #1e293b 0%, #312e81 50%, #1e293b 100%);
   position: relative;
   overflow: hidden;
 }
@@ -2288,8 +2405,9 @@ font-size: 42px;
 
 /* ========== FOOTER ========== */
 .landing-footer {
-  background: linear-gradient(135deg, #3d2a5a 0%, #4a3668 100%);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-top: 1px solid rgba(99, 102, 241, 0.15);
+  margin-top: auto; /* Push footer to bottom with flexbox */
 }
 
 .footer-container {
@@ -2438,6 +2556,10 @@ font-size: 42px;
     grid-template-columns: repeat(2, 1fr);
   }
   
+  .tech-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
   .footer-main {
     grid-template-columns: 1fr;
     gap: 40px;
@@ -2484,6 +2606,10 @@ font-size: 42px;
   }
   
   .capabilities-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-cards-grid {
     grid-template-columns: 1fr;
   }
   

@@ -151,7 +151,7 @@ class ModelStore:
             "cv_mean_r2": float(cv_mean) if cv_mean is not None else None,
             "cv_std_r2": float(cv_std) if cv_std is not None else None,
             "training_date": datetime.now().isoformat(),
-            "feature_names": ["velocity", "angle", "drag"],
+            "feature_names": ["velocity", "angle", "drag", "sin_angle", "cos_angle", "sin_2angle", "v0_sin2"],
         }
         
         logger.info(f"Model training completed:")
@@ -176,6 +176,11 @@ class ModelStore:
         """
         Generate training data by running physics simulations.
         
+        Uses stratified sampling to ensure good coverage across all angle ranges,
+        especially negative angles which require more training data.
+        
+        Features include derived trigonometric components for better learning.
+        
         Args:
             n_samples: Number of samples to generate
             random_state: Random seed
@@ -189,30 +194,45 @@ class ModelStore:
         
         logger.info(f"Generating {n_samples} training samples...")
         
+        # Stratified sampling with IMPROVED negative angle coverage
+        # Negative angles are harder to learn, so we oversample them
         for i in range(n_samples):
-            # Sample parameters with realistic ranges including negative angles
+            # Sample parameters with realistic ranges
             v0 = float(rng.uniform(80, 1200))      # m/s
-            # Include negative angles for downward trajectories (-85 to 85)
-            # Use stratified sampling to ensure good coverage including edge cases
-            if i < n_samples // 4:
-                # Sample negative angles 
-                angle = float(rng.uniform(-85, -10))
-            elif i < n_samples // 2:
-                # Sample positive angles
-                angle = float(rng.uniform(10, 85))
-            elif i < 3 * n_samples // 4:
-                # Sample around critical angles (near 45° optimal range)
-                angle = float(rng.uniform(20, 50))
-            else:
-                # CRITICAL: Sample edge cases near zero (including 0°)
-                # This ensures the model learns horizontal trajectories properly
-                angle = float(rng.uniform(-10, 10))
+            
+            # Improved stratified sampling for angles:
+            # 30% negative angles (critical for downward trajectories)
+            # 25% positive angles (standard trajectories)
+            # 25% optimal range around 45° 
+            # 20% edge cases near zero (horizontal shots)
+            segment = i % 20  # Creates 20 segments for balanced distribution
+            
+            if segment < 6:  # 30% - Negative angles (more samples here)
+                angle = float(rng.uniform(-85, -5))
+            elif segment < 11:  # 25% - Positive angles
+                angle = float(rng.uniform(5, 85))
+            elif segment < 16:  # 25% - Optimal range
+                angle = float(rng.uniform(30, 60))
+            else:  # 20% - Edge cases near zero
+                angle = float(rng.uniform(-15, 15))
+            
             drag = float(rng.uniform(0.002, 0.035)) # dimensionless
             
             try:
                 # Run simulation
                 _, _, impact = simulate_trajectory(v0, angle, drag, dt=0.01)
-                X.append([v0, angle, drag])
+                
+                # FEATURE ENGINEERING: Add derived features for better learning
+                # These capture the physics relationship better than raw angle
+                angle_rad = np.radians(angle)
+                sin_angle = np.sin(angle_rad)
+                cos_angle = np.cos(angle_rad)
+                sin_2angle = np.sin(2 * angle_rad)  # Important for range formula
+                
+                # Extended features: [v0, angle, drag, sin, cos, sin2θ, v0*sin2θ]
+                v0_sin2 = v0 * sin_2angle  # Proportional to range in vacuum
+                
+                X.append([v0, angle, drag, sin_angle, cos_angle, sin_2angle, v0_sin2])
                 y.append(impact)
             except Exception as e:
                 logger.warning(f"Simulation failed for sample {i}: {e}")
@@ -319,8 +339,14 @@ class ModelStore:
         if self.model is None:
             raise RuntimeError("Model not trained. Please train the model first.")
         
-        # Prepare input
-        X = np.array([[v0, angle, drag]])
+        # Prepare input with feature engineering (same as training)
+        angle_rad = np.radians(angle)
+        sin_angle = np.sin(angle_rad)
+        cos_angle = np.cos(angle_rad)
+        sin_2angle = np.sin(2 * angle_rad)
+        v0_sin2 = v0 * sin_2angle
+        
+        X = np.array([[v0, angle, drag, sin_angle, cos_angle, sin_2angle, v0_sin2]])
         
         # Apply scaling if scaler exists
         if self.scaler is not None:
@@ -384,8 +410,17 @@ class ModelStore:
         if self.model is None:
             raise RuntimeError("Model not trained. Please train the model first.")
         
-        # Prepare input
-        X = np.array(params_list)
+        # Prepare input with feature engineering
+        X = []
+        for v0, angle, drag in params_list:
+            angle_rad = np.radians(angle)
+            sin_angle = np.sin(angle_rad)
+            cos_angle = np.cos(angle_rad)
+            sin_2angle = np.sin(2 * angle_rad)
+            v0_sin2 = v0 * sin_2angle
+            X.append([v0, angle, drag, sin_angle, cos_angle, sin_2angle, v0_sin2])
+        
+        X = np.array(X)
         
         # Apply scaling if scaler exists
         if self.scaler is not None:

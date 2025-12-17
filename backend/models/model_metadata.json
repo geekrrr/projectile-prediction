@@ -1,19 +1,23 @@
 {
   "model_type": "random_forest",
-  "n_samples": 1500,
+  "n_samples": 2000,
   "random_state": 42,
   "use_scaler": true,
-  "r2_score": 0.8845477381949075,
-  "train_r2_score": 0.9881499795671879,
-  "test_mse": 4487.876544516835,
-  "test_mae": 17.27384374304093,
-  "test_rmse": 66.9916154792287,
-  "cv_mean_r2": 0.9580232628852716,
-  "cv_std_r2": 0.028052302212094628,
-  "training_date": "2025-12-16T01:36:34.872332",
+  "r2_score": 0.948253568227939,
+  "train_r2_score": 0.9939944151070551,
+  "test_mse": 1939.7678717789365,
+  "test_mae": 12.700890022415779,
+  "test_rmse": 44.04279591237296,
+  "cv_mean_r2": 0.9700838093407228,
+  "cv_std_r2": 0.00782519615037965,
+  "training_date": "2025-12-17T02:02:38.662877",
   "feature_names": [
     "velocity",
     "angle",
-    "drag"
+    "drag",
+    "sin_angle",
+    "cos_angle",
+    "sin_2angle",
+    "v0_sin2"
   ]
 }

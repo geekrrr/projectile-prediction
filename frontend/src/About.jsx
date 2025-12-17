@@ -72,16 +72,26 @@ export default function About({ onNavigate }) {
     { icon: Orbit, title: "Multi-body Physics", desc: "Earth rotation and atmospheric density modeling" },
   ];
 
-  const techStack = [
-    { name: "React 18", category: "Frontend" },
-    { name: "Vite", category: "Build" },
-    { name: "FastAPI", category: "Backend" },
-    { name: "Python", category: "Backend" },
-    { name: "Scikit-learn", category: "ML" },
-    { name: "NumPy", category: "Compute" },
-    { name: "Recharts", category: "Viz" },
-    { name: "Uvicorn", category: "Server" },
-  ];
+  const techStack = {
+    frontend: [
+      { name: "React 18", desc: "Component-based UI library" },
+      { name: "Vite", desc: "Fast build tooling" },
+      { name: "Recharts", desc: "Data visualization" },
+      { name: "Lucide Icons", desc: "Modern icon system" },
+    ],
+    backend: [
+      { name: "FastAPI", desc: "High-performance Python API" },
+      { name: "Uvicorn", desc: "ASGI server" },
+      { name: "Pydantic", desc: "Data validation" },
+      { name: "NumPy/SciPy", desc: "Scientific computing" },
+    ],
+    tools: [
+      { name: "Scikit-learn", desc: "ML model training" },
+      { name: "Vercel", desc: "Frontend deployment" },
+      { name: "Render", desc: "Backend hosting" },
+      { name: "Git/GitHub", desc: "Version control" },
+    ],
+  };
 
   const handleNavClick = (view) => {
     if (onNavigate) onNavigate(view);
@@ -165,20 +175,64 @@ export default function About({ onNavigate }) {
         </div>
       </section>
 
-      {/* Tech Stack Section */}
+      {/* Tech Stack Section - Redesigned with 3 Cards */}
       <section className="landing-tech">
         <div className="tech-container">
           <div className="section-header">
             <span className="section-badge-dark">Technology</span>
             <h2 className="section-title-light">Built With Modern Stack</h2>
+            <p className="section-desc-light">
+              Powered by cutting-edge technologies for performance and reliability
+            </p>
           </div>
-          <div className="tech-badges-grid">
-            {techStack.map((tech, idx) => (
-              <div key={idx} className="tech-badge-landing">
-                <span className="tech-name">{tech.name}</span>
-                <span className="tech-category">{tech.category}</span>
+          <div className="tech-cards-grid">
+            {/* Frontend Card */}
+            <div className="tech-card tech-card-frontend">
+              <div className="tech-card-header">
+                <Code size={24} />
+                <h3>Frontend</h3>
               </div>
-            ))}
+              <ul className="tech-list">
+                {techStack.frontend.map((tech, idx) => (
+                  <li key={idx}>
+                    <span className="tech-item-name">{tech.name}</span>
+                    <span className="tech-item-desc">{tech.desc}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            {/* Backend Card */}
+            <div className="tech-card tech-card-backend">
+              <div className="tech-card-header">
+                <Server size={24} />
+                <h3>Backend</h3>
+              </div>
+              <ul className="tech-list">
+                {techStack.backend.map((tech, idx) => (
+                  <li key={idx}>
+                    <span className="tech-item-name">{tech.name}</span>
+                    <span className="tech-item-desc">{tech.desc}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            {/* Tools & Infrastructure Card */}
+            <div className="tech-card tech-card-tools">
+              <div className="tech-card-header">
+                <Layers size={24} />
+                <h3>Tools & Infrastructure</h3>
+              </div>
+              <ul className="tech-list">
+                {techStack.tools.map((tech, idx) => (
+                  <li key={idx}>
+                    <span className="tech-item-name">{tech.name}</span>
+                    <span className="tech-item-desc">{tech.desc}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>

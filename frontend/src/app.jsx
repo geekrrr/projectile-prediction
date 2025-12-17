@@ -225,7 +225,12 @@ export default function App() {
       }, 300);
 
     } catch (e) {
-      setError(e.message || String(e));
+      // Provide user-friendly error messages
+      let errorMessage = e.message || String(e);
+      if (errorMessage === "Failed to fetch" || errorMessage.includes("NetworkError") || errorMessage.includes("fetch")) {
+        errorMessage = "Unable to connect to server. Please ensure the backend is running at " + API_URL;
+      }
+      setError(errorMessage);
       console.error("Simulation error:", e);
     } finally {
       setLoading(false);
@@ -899,22 +904,22 @@ export default function App() {
                   {stats && (
                     <div className="stats-grid-new">
                       <div className="stat-box">
-                        <div className="stat-icon-new"><Mountain size={24} style={{color: '#a78bfa'}} /></div>
+                        <div className="stat-icon-new"><Mountain size={24} style={{color: "#4dabf7"}} /></div>
                         <div className="stat-label-new">Max Height</div>
                         <div className="stat-value-new">{stats.maxHeight?.toFixed(1)} m</div>
                       </div>
                       <div className="stat-box">
-                        <div className="stat-icon-new"><Ruler size={24} style={{color: '#60a5fa'}} /></div>
+                        <div className="stat-icon-new"><Ruler size={24} style={{color: "#b197fc"}} /></div>
                         <div className="stat-label-new">Max Range</div>
                         <div className="stat-value-new">{stats.maxRange?.toFixed(1)} m</div>
                       </div>
                       <div className="stat-box">
-                        <div className="stat-icon-new"><Timer size={24} style={{color: '#f97316'}} /></div>
+                        <div className="stat-icon-new"><Timer size={24} style={{color: "#eab308"}} /></div>
                         <div className="stat-label-new">Flight Time</div>
                         <div className="stat-value-new">{stats.flightTime?.toFixed(2)} s</div>
                       </div>
                       <div className="stat-box">
-                        <div className="stat-icon-new"><Hash size={24} style={{color: '#22c55e'}} /></div>
+                        <div className="stat-icon-new"><Hash size={24} style={{color:  "#51cf66"}} /></div>
                         <div className="stat-label-new">Data Points</div>
                         <div className="stat-value-new">{stats.trajectoryPoints}</div>
                       </div>
