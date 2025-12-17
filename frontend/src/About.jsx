@@ -354,7 +354,7 @@ export default function About({ onNavigate }) {
                 <a href="https://github.com/geekrrr/Ballistic_MPI" target="_blank" rel="noopener noreferrer">
                   <Github size={18} />
                 </a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+                <a href="#" onClick={(e) => { e.preventDefault(); }} title="Connect on LinkedIn">
                   <Linkedin size={18} />
                 </a>
                 <a href="mailto:contact@example.com">

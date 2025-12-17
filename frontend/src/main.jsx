@@ -106,16 +106,18 @@ root.render(
   </React.StrictMode>
 )
 
-// Log app version
-console.log(
-  '%c🚀 Ballistic Studio v1.0.0',
-  'color: #764ba2; font-size: 16px; font-weight: bold; padding: 10px;'
-)
+// Log app version (only in development)
+if (import.meta.env.DEV) {
+  console.log(
+    '%c🚀 Ballistic Studio v1.0.0',
+    'color: #764ba2; font-size: 16px; font-weight: bold; padding: 10px;'
+  )
 
-console.log(
-  '%cDeveloped by Group 1 - CSVTU',
-  'color: #667eea; font-size: 12px; padding: 5px;'
-)
+  console.log(
+    '%cDeveloped by Group 1 - CSVTU',
+    'color: #667eea; font-size: 12px; padding: 5px;'
+  )
+}
 
 // Performance monitoring (development only)
 if (import.meta.env.DEV) {
