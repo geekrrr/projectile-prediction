@@ -354,10 +354,10 @@ export default function About({ onNavigate }) {
                 <a href="https://github.com/rana-rohit/projectile-prediction" target="_blank" rel="noopener noreferrer" title="GitHub Repository">
                   <Github size={18} />
                 </a>
-                <a href="https://www.linkedin.com/in/rohit-rana31?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" onClick={(e) => { e.preventDefault(); }} title="Connect on LinkedIn">
+                <a href="https://www.linkedin.com/in/rohit-rana31?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noopener noreferrer" title="Connect on LinkedIn">
                   <Linkedin size={18} />
                 </a>
-                <a href="mailto:rohitrananet@gmail.com" title="Email Us">
+                <a href="mailto:rohitrananet@gmail.com" target="_blank" rel="noopener noreferrer" title="Email Us">
                   <Mail size={18} />
                 </a>
               </div>
