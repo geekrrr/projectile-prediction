@@ -1,21 +1,14 @@
 <div align="center">
 
-# 🚀 Ballistic Studio
+#  Ballistix
 
 ### Advanced Trajectory Prediction & Simulation Platform
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-ballistix.vercel.app-blue?style=for-the-badge)](https://ballistix.vercel.app)
-[![API](https://img.shields.io/badge/📡_API-ballistix.onrender.com-green?style=for-the-badge)](https://ballistix.onrender.com/docs)
-
-[![React](https://img.shields.io/badge/React-18.2-61DAFB?style=flat-square&logo=react&logoColor=white)](https://reactjs.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![Scikit-learn](https://img.shields.io/badge/ML-Scikit--learn-F7931E?style=flat-square&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
-[![Vite](https://img.shields.io/badge/Vite-5.0-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/_Live_Demo-ballistix.vercel.app-blue?style=for-the-badge)](https://ballistix.vercel.app)
+[![API](https://img.shields.io/badge/_API-ballistix.onrender.com-green?style=for-the-badge)](https://ballistix.onrender.com/docs)
 
 <p align="center">
-  <strong>A full-stack application combining physics-based simulation with machine learning<br/>for accurate ballistic trajectory prediction and real-time visualization.</strong>
+  <strong>A full-stack application combining physics-based simulation with machine learning<br/>for accurate projectile trajectory prediction and real-time visualization.</strong>
 </p>
 
 [Live Demo](https://ballistix.vercel.app) • [API Docs](https://ballistix.onrender.com/docs) • [Features](#-features) • [Quick Start](#-quick-start) • [API Reference](#-api-reference)
@@ -24,32 +17,38 @@
 
 ---
 
-## 🎯 Overview
+##  Overview
 
-**Ballistic Studio** simulates projectile and missile trajectories using:
+
+**Ballistix** is an advanced platform for simulating and predicting projectile and missile trajectories, combining physics-based simulation with machine learning and a modern, interactive UI.
+
+- **Modern UI**: Dark theme, animated hero, glassmorphism, responsive design
+- **Navigation**: Footer and CTA buttons on the About page now switch views (Home, Ballistic, Analytics, Settings, Launch Simulator)
 - **Physics Engine**: Runge-Kutta 4 integration with ISA atmospheric model
-- **Machine Learning**: Random Forest model achieving 99% R² accuracy
-- **Real-time Visualization**: Animated trajectory plots with multiple projectile types
-- **20+ Missile Presets**: Real-world specifications from verified public sources
+- **Machine Learning**: Random Forest model with 98% R² accuracy
+- **Real-time Visualization**: Animated trajectory plots, multiple projectile types
+- **Missile Presets**: 20+ real-world missile profiles
 
 ---
 
-## ✨ Features
+
+##  Features
 
 | Feature | Description |
 |---------|-------------|
-| 🎯 **Physics Simulation** | Newtonian mechanics with altitude-dependent gravity and air density |
-| 🤖 **ML Predictions** | Instant impact predictions with trained Random Forest model |
-| 📊 **Analytics Dashboard** | Compare physics vs ML, track accuracy across runs |
-| 🚀 **Missile Database** | ICBMs, SLBMs, cruise missiles with verified specs |
-| 🌍 **3D Globe View** | Visualize long-range trajectories on interactive Earth |
-| 🎨 **Modern UI** | Glass-morphism design, responsive, animated |
-| 👤 **User Sessions** | Per-user history and settings persistence |
-| 📱 **Mobile Ready** | Fully responsive across all devices |
+|  **Modern UI** | Dark theme, animated hero, glassmorphism, responsive |
+|  **Footer Navigation** | Home, Ballistic, Analytics, Settings (About page) |
+|  **Launch Simulator** | CTA button launches trajectory simulation |
+|  **Physics Simulation** | Newtonian mechanics, altitude-dependent gravity, air density |
+|  **ML Predictions** | Random Forest, instant impact predictions |
+|  **Analytics Dashboard** | Compare physics vs ML, track accuracy |
+|  **Missile Database** | ICBMs, SLBMs, cruise missiles, real specs |
+|  **3D Globe View** | Visualize long-range trajectories |
+|  **User Sessions** | Per-user history and settings |
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 
@@ -61,14 +60,14 @@ npm >= 9.0.0
 
 ### Option 1: Use Live Version
 
-🌐 **Frontend**: https://ballistix.vercel.app  
-📡 **API Docs**: https://ballistix.onrender.com/docs
+ **Frontend**: https://ballistix.vercel.app  
+ **API Docs**: https://ballistix.onrender.com/docs
 
 ### Option 2: Run Locally
 
 ```bash
 # Clone repository
-git clone https://github.com/geekrrr/projectile-prediction.git
+git clone https://github.com/rana-rohit/projectile-prediction.git
 cd projectile-prediction
 
 # Backend setup
@@ -92,45 +91,49 @@ npm run dev
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
+
 
 ```
-Ballistic_MPI/
-├── backend/                    # FastAPI Backend
+projectile-prediction/
+├── backend/
 │   ├── app/
-│   │   ├── main.py            # API endpoints
+│   │   ├── main.py            # FastAPI API endpoints
 │   │   ├── sim.py             # Physics engine (RK4 + ISA)
 │   │   ├── model_store.py     # ML model management
 │   │   ├── database.py        # SQLAlchemy config
 │   │   └── db_models.py       # Data models
 │   ├── models/
-│   │   ├── rf_model.joblib    # Trained Random Forest (~5.7MB)
+│   │   ├── rf_model.joblib    # Trained Random Forest
 │   │   ├── scaler.joblib      # Feature scaler
 │   │   └── model_metadata.json
 │   ├── requirements.txt
-│   └── runtime.txt            # Python version for deployment
+│   └── runtime.txt
+│   └── static/
+│       └── ballistic/         # Static previews
 │
-├── frontend/                   # React + Vite Frontend
+├── frontend/
 │   ├── src/
 │   │   ├── app.jsx            # Main app & routing
 │   │   ├── Ballistic.jsx      # Missile simulation
-│   │   ├── analytics.jsx      # Charts & metrics
-│   │   ├── About.jsx          # Landing page
+│   │   ├── analytics.jsx      # Analytics dashboard
+│   │   ├── About.jsx          # Modern landing page (with navigation)
 │   │   ├── Settings.jsx       # User preferences
 │   │   ├── Auth.jsx           # Authentication
 │   │   ├── AnimationCanvas.jsx
 │   │   └── styles.css         # Global styles
-│   ├── vercel.json            # Vercel config
+│   ├── index.html
+│   ├── vercel.json
 │   └── package.json
 │
-├── PROJECT_REPORT.md          # Detailed technical report
-├── DEPLOYMENT.md              # Hosting guide
+├── DEPLOYMENT.md
+├── LICENSE
 └── README.md
 ```
 
 ---
 
-## 🔬 Physics Engine
+##  Physics Engine
 
 The simulation uses **Runge-Kutta 4 (RK4)** numerical integration with:
 
@@ -161,7 +164,7 @@ M_EARTH = 5.972×10²⁴ kg    # Earth mass
 
 ---
 
-## 📡 API Reference
+##  API Reference
 
 ### Base URL
 ```
@@ -241,7 +244,7 @@ curl -X POST https://ballistix.onrender.com/predict \
 
 ---
 
-## 🤖 Machine Learning
+##  Machine Learning
 
 ### Model Details
 | Parameter | Value |
@@ -268,7 +271,7 @@ Physics Simulation → Generate Dataset → Train/Test Split (80/20)
 
 ---
 
-## 🚀 Missile Database
+##  Missile Database
 
 Pre-configured profiles with verified specifications:
 
@@ -299,7 +302,8 @@ Pre-configured profiles with verified specifications:
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
+
 
 ### Frontend
 - **React 18** - UI framework
@@ -308,6 +312,7 @@ Pre-configured profiles with verified specifications:
 - **Three.js** - 3D globe
 - **Lucide React** - Icons
 - **Axios** - HTTP client
+- **Modern CSS** - Glassmorphism, gradients, responsive
 
 ### Backend
 - **FastAPI** - Web framework
@@ -316,6 +321,7 @@ Pre-configured profiles with verified specifications:
 - **NumPy/SciPy** - Numerical computing
 - **Pandas** - Data processing
 - **SQLAlchemy** - ORM
+- **Pydantic** - Data validation
 
 ### Deployment
 - **Vercel** - Frontend hosting
@@ -324,7 +330,17 @@ Pre-configured profiles with verified specifications:
 
 ---
 
-## 📊 Performance
+##  Navigation & Usage
+
+- The About page features a modern landing design with animated hero, glassmorphism, and a dark theme.
+- Footer navigation buttons (Home, Ballistic, Analytics, Settings) and the "Launch Simulator" CTA are fully functional, switching views using the `onNavigate` prop.
+- Navigation view names: `trajectory`, `ballistic`, `analytics`, `settings`.
+
+---
+
+---
+
+##  Performance
 
 | Metric | Value |
 |--------|-------|
@@ -336,7 +352,7 @@ Pre-configured profiles with verified specifications:
 
 ---
 
-## 🔒 Security
+##  Security
 
 - ✅ Input validation with Pydantic
 - ✅ CORS configured per environment
@@ -346,7 +362,7 @@ Pre-configured profiles with verified specifications:
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/amazing-feature`)
@@ -356,13 +372,13 @@ Pre-configured profiles with verified specifications:
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the **MIT License** - see [LICENSE](LICENSE) for details.
 
 ```
 MIT License
-Copyright (c) 2025 Group 1 - CSVTU
+Copyright (c) 2025 Rohit Rana
 ```
 
 ---
@@ -371,8 +387,8 @@ Copyright (c) 2025 Group 1 - CSVTU
 
 ### 🌟 Star this repo if you found it useful!
 
-[![GitHub stars](https://img.shields.io/github/stars/geekrrr/projectile-prediction?style=social)](https://github.com/geekrrr/projectile-prediction)
+[![GitHub stars](https://img.shields.io/github/stars/rana-rohit/projectile-prediction?style=social)](https://github.com/rana-rohit/projectile-prediction)
 
-**[Live Demo](https://ballistix.vercel.app)** • **[API Docs](https://ballistix.onrender.com/docs)** • **[Report Issues](https://github.com/geekrrr/projectile-prediction/issues)**
+**[Live Demo](https://ballistix.vercel.app)** • **[API Docs](https://ballistix.onrender.com/docs)** • **[Report Issues](https://github.com/rana-rohit/projectile-prediction/issues)**
 
 </div>
