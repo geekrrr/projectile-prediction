@@ -277,8 +277,19 @@ export default function App() {
     const maxX = Math.max(...xs);
     const maxY = Math.max(...ys);
     const padding = 60;
-    const scaleX = (rect.width - 2 * padding) / maxX;
-    const scaleY = (rect.height - 2 * padding) / maxY;
+    
+    // Use uniform scaling to preserve true launch angle
+    const scaleX_fit = (rect.width - 2 * padding) / maxX;
+    const scaleY_fit = (rect.height - 2 * padding) / maxY;
+    const uniformScale = Math.min(scaleX_fit, scaleY_fit);
+    
+    // Both axes use same scale to preserve angles
+    const scaleX = uniformScale;
+    const scaleY = uniformScale;
+    
+    // Calculate the actual range that will be displayed on each axis
+    const displayMaxX = (rect.width - 2 * padding) / uniformScale;
+    const displayMaxY = (rect.height - 2 * padding) / uniformScale;
 
     // Draw grid
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
@@ -287,7 +298,7 @@ export default function App() {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.76)';
 
     const xSteps = 5;
-    const xInterval = maxX / xSteps;
+    const xInterval = displayMaxX / xSteps;
     for (let i = 0; i <= xSteps; i++) {
       const x = padding + (i * xInterval * scaleX);
       ctx.beginPath();
@@ -299,7 +310,7 @@ export default function App() {
     }
 
     const ySteps = 5;
-    const yInterval = maxY / ySteps;
+    const yInterval = displayMaxY / ySteps;
     for (let i = 0; i <= ySteps; i++) {
       const y = rect.height - padding - (i * yInterval * scaleY);
       ctx.beginPath();
@@ -361,12 +372,47 @@ export default function App() {
       ctx.shadowBlur = 0;
     }
 
+    // Launch angle indicator arrow - exact input angle
+    const launchX = padding + xs[0] * scaleX;
+    const launchY = rect.height - padding - ys[0] * scaleY;
+    const angleRad = angle * Math.PI / 180;
+    const arrowLength = 50; // Length of the angle indicator
+    const arrowEndX = launchX + arrowLength * Math.cos(angleRad);
+    const arrowEndY = launchY - arrowLength * Math.sin(angleRad); // Negative because canvas Y is inverted
+    
+    // Draw the angle indicator line
+    ctx.strokeStyle = 'rgba(255, 215, 0, 0.8)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(launchX, launchY);
+    ctx.lineTo(arrowEndX, arrowEndY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Draw arrowhead
+    const headLength = 10;
+    const headAngle = Math.PI / 6;
+    ctx.fillStyle = 'rgba(255, 215, 0, 0.9)';
+    ctx.beginPath();
+    ctx.moveTo(arrowEndX, arrowEndY);
+    ctx.lineTo(
+      arrowEndX - headLength * Math.cos(angleRad - headAngle),
+      arrowEndY + headLength * Math.sin(angleRad - headAngle)
+    );
+    ctx.lineTo(
+      arrowEndX - headLength * Math.cos(angleRad + headAngle),
+      arrowEndY + headLength * Math.sin(angleRad + headAngle)
+    );
+    ctx.closePath();
+    ctx.fill();
+
     // Launch point
     ctx.fillStyle = '#FFD700';
     ctx.shadowColor = 'rgba(255, 215, 0, 0.8)';
     ctx.shadowBlur = 15;
     ctx.beginPath();
-    ctx.arc(padding, rect.height - padding, 7, 0, Math.PI * 2);
+    ctx.arc(launchX, launchY, 7, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
 
@@ -501,7 +547,7 @@ export default function App() {
       ctx.fillText('💥', impactX, impactY);
       ctx.shadowBlur = 0;
     }
-  }, [xs, ys, currentAnimationIndex, isAnimating, selectedObject, animationComplete, stats]);
+  }, [xs, ys, currentAnimationIndex, isAnimating, selectedObject, animationComplete, stats, angle]);
 
   // Clear simulation
   function clearSimulation() {

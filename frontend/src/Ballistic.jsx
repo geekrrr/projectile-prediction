@@ -880,8 +880,12 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
     // Start at Earth surface + launch height (for air-launched missiles etc.)
     const launchAltitude = params.launchHeight || 0;
     // Initial velocity for air-launched missiles
-    const initialVy = launchAltitude > 1000 ? 200 : 100;  // Air-launched have initial speed
-    let state = [0, R_E + launchAltitude, 0, initialVy, m_0];
+    const initialSpeed = launchAltitude > 1000 ? 200 : 100;  // Air-launched have initial speed
+    // Convert elevation angle to radians and compute initial velocity components
+    const elevationRad = EA * Math.PI / 180;
+    const initialVx = initialSpeed * Math.cos(elevationRad);
+    const initialVy = initialSpeed * Math.sin(elevationRad);
+    let state = [0, R_E + launchAltitude, initialVx, initialVy, m_0];
     const dt = 0.5;  // 0.5 second time step
     const maxTime = 7200; // 2 hours max for ICBMs
     
@@ -889,7 +893,7 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
     let t = 0;
     let separated = false;
 
-    // Improved pointing logic based on flight phase
+    // Improved pointing logic based on flight phase and elevation angle
     function decidePointing(x, y, vx, vy, flightTime) {
       const r = [x, y];
       const v = [vx, vy];
@@ -897,16 +901,45 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
       const vhat = (vx === 0 && vy === 0) ? rhat : normalize(v);
       const h = norm(r) - R_E;
       
-      // Above 10km, follow velocity vector (gravity turn)
-      if (h > 10000) {
-        return vhat;
-      } else {
-        // Below 10km during ascent, point at elevation angle
-        if (dot(r, v) > 0) {  // Ascending
-          return rotate(rhat, EA - 90);
+      // Convert elevation angle to radians
+      const elevationRad = EA * Math.PI / 180;
+      
+      // Different behavior based on trajectory type (determined by elevation angle)
+      if (EA < 30) {
+        // DEPRESSED TRAJECTORY: Quick pitch-over, follow velocity early
+        if (h > 3000 || flightTime > 15) {
+          return vhat; // Follow velocity vector quickly
         }
-        return vhat;  // Descending - follow velocity
+      } else if (EA < 50) {
+        // MINIMUM ENERGY: Moderate gravity turn
+        if (h > 8000) {
+          return vhat;
+        }
+      } else if (EA < 70) {
+        // STANDARD BALLISTIC: Normal gravity turn
+        if (h > 15000) {
+          return vhat;
+        }
+      } else {
+        // LOFTED TRAJECTORY: Maintain steep angle longer
+        if (h > 25000) {
+          return vhat;
+        }
       }
+      
+      // During powered ascent, point at elevation angle from local horizontal
+      if (dot(r, v) >= 0) {  // Ascending or at apogee
+        // Local horizontal pointing in POSITIVE x direction (East)
+        // At [0, R_E], we want horizontal = [1, 0]
+        // General formula: horizontal tangent = [y, -x] / |r| (points East/positive x)
+        const horizontal = normalize([y, -x]);
+        // Combine horizontal and vertical (rhat) components based on elevation angle
+        const px = horizontal[0] * Math.cos(elevationRad) + rhat[0] * Math.sin(elevationRad);
+        const py = horizontal[1] * Math.cos(elevationRad) + rhat[1] * Math.sin(elevationRad);
+        return normalize([px, py]);
+      }
+      
+      return vhat;  // Descending - follow velocity
     }
 
     function derivatives(state, t) {
@@ -985,9 +1018,16 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
       const speedOfSound = getSpeedOfSound(Math.max(0, h));
       const mach = v / speedOfSound;
 
+      // Calculate ground range as arc length from launch point
+      // Using angle from vertical (y-axis) at Earth center
+      // At launch: position is [0, R_E], angle = 0
+      // Ground range = R_E * angle (arc length formula)
+      const angleFromStart = Math.atan2(state[0], state[1]); // angle from positive y-axis
+      const groundRange = R_E * angleFromStart / 1000; // in km
+
       trajectory.push({
         t,
-        x: state[0] / 1000,
+        x: groundRange,  // Use ground range for horizontal axis (in km)
         y: state[1] / 1000,
         h: h / 1000,
         v: v,
@@ -1610,6 +1650,68 @@ export default function Ballistic({ onSaveRun, historyLength = 0 }) {
                 min={10}
                 max={90}
               />
+              
+              {/* Trajectory Type Indicator */}
+              <div style={{ 
+                marginTop: '8px', 
+                padding: '8px 12px', 
+                borderRadius: '8px',
+                fontSize: '12px',
+                background: elevationAngle < 30 ? 'rgba(255, 100, 100, 0.2)' : 
+                           elevationAngle < 50 ? 'rgba(255, 200, 100, 0.2)' :
+                           elevationAngle < 70 ? 'rgba(100, 255, 150, 0.2)' :
+                           'rgba(100, 180, 255, 0.2)',
+                border: `1px solid ${elevationAngle < 30 ? 'rgba(255, 100, 100, 0.5)' : 
+                                     elevationAngle < 50 ? 'rgba(255, 200, 100, 0.5)' :
+                                     elevationAngle < 70 ? 'rgba(100, 255, 150, 0.5)' :
+                                     'rgba(100, 180, 255, 0.5)'}`
+              }}>
+                <div style={{ fontWeight: '600', marginBottom: '4px' }}>
+                  {elevationAngle < 30 ? '🎯 Depressed Trajectory' : 
+                   elevationAngle < 50 ? '⚡ Minimum Energy' :
+                   elevationAngle < 70 ? '🚀 Standard Ballistic' :
+                   '🛰️ Lofted Trajectory'}
+                </div>
+                <div style={{ opacity: 0.8, fontSize: '11px' }}>
+                  {elevationAngle < 30 ? 'Fast arrival, low altitude, anti-ship/tactical use' : 
+                   elevationAngle < 50 ? 'Balanced range & altitude, efficient flight path' :
+                   elevationAngle < 70 ? 'Medium-range missiles, good for MRBMs' :
+                   'High apogee, long range ICBMs, MIRV deployment'}
+                </div>
+              </div>
+
+              {/* Quick Preset Buttons */}
+              <div style={{ marginTop: '10px' }}>
+                <div style={{ fontSize: '11px', opacity: 0.7, marginBottom: '6px' }}>Quick Presets:</div>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                  {[
+                    { angle: 20, label: '20°', title: 'Depressed' },
+                    { angle: 35, label: '35°', title: 'Cruise' },
+                    { angle: 45, label: '45°', title: 'Optimal' },
+                    { angle: 60, label: '60°', title: 'Standard' },
+                    { angle: 75, label: '75°', title: 'High' },
+                    { angle: 87, label: '87°', title: 'ICBM' },
+                  ].map(preset => (
+                    <button
+                      key={preset.angle}
+                      onClick={() => setElevationAngle(preset.angle)}
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '11px',
+                        borderRadius: '6px',
+                        border: elevationAngle === preset.angle ? '2px solid rgba(255,255,255,0.8)' : '1px solid rgba(255,255,255,0.3)',
+                        background: elevationAngle === preset.angle ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.05)',
+                        color: '#fff',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                      }}
+                      title={preset.title}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="input-group">
