@@ -1,10 +1,10 @@
-# 🚀 Deployment Guide - Ballistic Studio
+#  Deployment Guide - Ballistic Studio
 
 ## Complete Step-by-Step Hosting Instructions
 
 ---
 
-## 📋 Prerequisites
+##  Prerequisites
 
 Before starting, ensure you have:
 - ✅ GitHub account
@@ -14,7 +14,7 @@ Before starting, ensure you have:
 
 ---
 
-## 🎯 Deployment Strategy
+##  Deployment Strategy
 
 ```
 Step 1: Deploy Backend to Render    (10 minutes)
@@ -30,7 +30,7 @@ Step 5: Test & Verify                (5 minutes)
 
 ---
 
-## 🔧 PART 1: Deploy Backend to Render
+##  PART 1: Deploy Backend to Render
 
 ### Step 1: Push Code to GitHub
 
@@ -82,7 +82,7 @@ PYTHON_VERSION = 3.10
 
 ---
 
-## 🎨 PART 2: Deploy Frontend to Vercel
+##  PART 2: Deploy Frontend to Vercel
 
 ### Step 1: Deploy to Vercel
 
@@ -120,7 +120,7 @@ VITE_API_URL = https://ballistic-api.onrender.com
 
 ---
 
-## 🔗 PART 3: Connect Frontend & Backend (CORS)
+##  PART 3: Connect Frontend & Backend (CORS)
 
 ### Update Backend CORS Settings
 
@@ -139,7 +139,7 @@ FRONTEND_URL = https://your-app.vercel.app
 
 ---
 
-## ✅ PART 4: Verification Checklist
+##  PART 4: Verification Checklist
 
 Test these features on your live site:
 
@@ -166,7 +166,7 @@ Should return:
 
 ---
 
-## 🎉 SUCCESS! Your App is Live
+##  SUCCESS! Your App is Live
 
 **Frontend URL:** `https://your-app.vercel.app`
 **Backend API:** `https://your-api.onrender.com`
@@ -174,7 +174,7 @@ Should return:
 
 ---
 
-## 🔄 Making Updates After Deployment
+##  Making Updates After Deployment
 
 ### To Update Code:
 
@@ -191,7 +191,7 @@ git push origin main
 
 ---
 
-## ⚙️ Optional: Custom Domain
+##  Optional: Custom Domain
 
 ### For Vercel (Frontend):
 1. Go to Project Settings → Domains
@@ -205,7 +205,7 @@ git push origin main
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Backend Issues:
 
@@ -233,7 +233,7 @@ git push origin main
 
 ---
 
-## 💰 Free Tier Limits
+##  Free Tier Limits
 
 ### Render Free Plan:
 - ✅ 750 hours/month
@@ -249,7 +249,7 @@ git push origin main
 
 ---
 
-## 📞 Support
+##  Support
 
 **Issues?** Check:
 - [Render Status](https://status.render.com/)
@@ -259,7 +259,7 @@ git push origin main
 
 ---
 
-## 🎓 What You've Accomplished
+##  What You've Accomplished
 
 - ✅ Full-stack app deployed to production
 - ✅ Automatic HTTPS/SSL certificates
@@ -272,4 +272,4 @@ git push origin main
 ---
 
 *Last Updated: December 16, 2025*
-*Ballistic Studio v1.0.0*
+*Ballistix v1.0.0*
