@@ -1,9 +1,9 @@
 {
-  "name": "ballistic-frontend",
+  "name": "ballistix-frontend",
   "version": "1.0.0",
   "private": true,
-  "description": "Ballistic Trajectory Prediction System - Frontend",
-  "author": "Group 1 - CSVTU",
+  "description": "Projectile Trajectory Prediction System - Frontend",
+  "author": "Rohit Rana",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.6.5",

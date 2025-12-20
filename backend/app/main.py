@@ -16,8 +16,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(
-    title="Ballistic Trajectory Prediction API",
-    description="API for ballistic missile trajectory prediction using physics simulation and ML",
+    title="Projectile Trajectory Prediction API",
+    description="API for projectile trajectory prediction using physics simulation and ML",
     version="1.0.0"
 )
 

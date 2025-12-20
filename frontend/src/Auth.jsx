@@ -348,7 +348,7 @@ export default function Auth({ onLogin }) {
             <div className="auth-brand-icon">
               <Target size={48} />
             </div>
-            <h1 className="auth-brand-title">Ballistic Studio</h1>
+            <h1 className="auth-brand-title">Ballistix</h1>
             <p className="auth-brand-desc">
               Advanced trajectory simulation platform powered by physics and machine learning
             </p>

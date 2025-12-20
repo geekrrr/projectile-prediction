@@ -1893,7 +1893,7 @@ font-size: 42px;
 /* ========== FEATURES SECTION ========== */
 .landing-features {
   padding: 100px 40px;
-  background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #5a3d7a 100%);;
 }
 
 .features-container {
@@ -1909,12 +1909,12 @@ font-size: 42px;
 .section-badge {
   display: inline-block;
   padding: 6px 14px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  background: linear-gradient(135deg, rgba(139, 99, 241, 0.875) 0%, rgba(139, 92, 246, 0.2) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 50px;
   font-size: 12px;
   font-weight: 700;
-  color: #a5b4fc;
+  color: #fff;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 16px;

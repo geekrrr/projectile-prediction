@@ -109,7 +109,7 @@ root.render(
 // Log app version (only in development)
 if (import.meta.env.DEV) {
   console.log(
-    '%c🚀 Ballistic Studio v1.0.0',
+    '%c Ballistic Studio v1.0.0',
     'color: #764ba2; font-size: 16px; font-weight: bold; padding: 10px;'
   )
 
@@ -121,7 +121,7 @@ if (import.meta.env.DEV) {
 
 // Performance monitoring (development only)
 if (import.meta.env.DEV) {
-  console.log('%c⚡ Development Mode Active', 'color: #f093fb; font-size: 12px;')
+  console.log('%c Development Mode Active', 'color: #f093fb; font-size: 12px;')
   
   // Log performance metrics
   window.addEventListener('load', () => {
@@ -129,7 +129,7 @@ if (import.meta.env.DEV) {
       const perfData = performance.getEntriesByType('navigation')[0]
       if (perfData) {
         console.log(
-          `%c📊 Performance: ${Math.round(perfData.loadEventEnd - perfData.fetchStart)}ms`,
+          `%c Performance: ${Math.round(perfData.loadEventEnd - perfData.fetchStart)}ms`,
           'color: #667eea; font-size: 12px;'
         )
       }

@@ -45,8 +45,8 @@ export default function About({ onNavigate }) {
     },
     { 
       icon: Globe, 
-      title: "3D Globe Visualization", 
-      desc: "Interactive Earth view for visualizing long-range ballistic trajectories across continents" 
+      title: "Smooth Simulations", 
+      desc: "Simulation of projectile motion with adjustable release angles for precise simulations" 
     },
     { 
       icon: BarChart3, 
@@ -66,7 +66,7 @@ export default function About({ onNavigate }) {
   ];
 
   const capabilities = [
-    { icon: LineChart, title: "Advanced Trajectory", desc: "Complex ballistic path computation with environmental factors" },
+    { icon: LineChart, title: "Advanced Trajectory", desc: "Complex projectile path computation with environmental factors" },
     { icon: Database, title: "Data Persistence", desc: "Save and compare simulation history across sessions" },
     { icon: Gauge, title: "Performance Metrics", desc: "Detailed flight statistics and impact analysis" },
     { icon: Orbit, title: "Multi-body Physics", desc: "Earth rotation and atmospheric density modeling" },
@@ -127,7 +127,7 @@ export default function About({ onNavigate }) {
             <span>Physics + Machine Learning</span>
           </div>
           <h1 className="hero-main-title">
-            High-Performance Ballistic<br />
+            High-Performance Projectile<br />
             <span className="gradient-text">Trajectory Prediction</span>
           </h1>
           <p className="hero-main-desc">
@@ -150,7 +150,7 @@ export default function About({ onNavigate }) {
               <span className="stat-label">Missile Presets</span>
             </div>
             <div className="hero-stat">
-              <span className="stat-value">99%</span>
+              <span className="stat-value">98%</span>
               <span className="stat-label">ML Accuracy</span>
             </div>
             <div className="hero-stat">
@@ -326,7 +326,7 @@ export default function About({ onNavigate }) {
           <h2>Get Started For Free</h2>
           <p>Launch your first simulation in seconds. No setup required.</p>
           <div className="cta-buttons">
-            <button className="cta-primary-large" onClick={() => handleNavClick('home')}>
+            <button className="cta-primary-large" onClick={() => handleNavClick('trajectory')}>
               <Rocket size={20} />
               Launch Simulator
             </button>
@@ -344,20 +344,20 @@ export default function About({ onNavigate }) {
             <div className="footer-brand">
               <div className="footer-logo">
                 <Rocket size={28} />
-                <span>Ballistic Studio</span>
+                <span>Ballistx</span>
               </div>
               <p className="footer-desc">
                 Advanced trajectory prediction combining physics simulation 
                 and machine learning for accurate ballistic analysis.
               </p>
               <div className="footer-social">
-                <a href="https://github.com/geekrrr/Ballistic_MPI" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/rana-rohit/projectile-prediction" target="_blank" rel="noopener noreferrer" title="GitHub Repository">
                   <Github size={18} />
                 </a>
-                <a href="#" onClick={(e) => { e.preventDefault(); }} title="Connect on LinkedIn">
+                <a href="https://www.linkedin.com/in/rohit-rana31?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" onClick={(e) => { e.preventDefault(); }} title="Connect on LinkedIn">
                   <Linkedin size={18} />
                 </a>
-                <a href="mailto:contact@example.com">
+                <a href="mailto:rohitrananet@gmail.com" title="Email Us">
                   <Mail size={18} />
                 </a>
               </div>
@@ -366,7 +366,7 @@ export default function About({ onNavigate }) {
             <div className="footer-links">
               <div className="footer-column">
                 <h4>Product</h4>
-                <button onClick={() => handleNavClick('home')}>Home</button>
+                <button onClick={() => handleNavClick('trajectory')}>Home</button>
                 <button onClick={() => handleNavClick('ballistic')}>Ballistic</button>
                 <button onClick={() => handleNavClick('analytics')}>Analytics</button>
                 <button onClick={() => handleNavClick('settings')}>Settings</button>
@@ -389,7 +389,7 @@ export default function About({ onNavigate }) {
           </div>
           
           <div className="footer-bottom">
-            <p>© {new Date().getFullYear()} Ballistic Studio. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} Ballistx. All rights reserved.</p>
           </div>
         </div>
       </footer>

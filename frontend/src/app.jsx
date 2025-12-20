@@ -628,7 +628,7 @@ export default function App() {
         <div className="header-left">
           <h1 className="app-title">
             <Target className="title-icon" />
-            <span className="title-text">Ballistic Studio</span>
+            <span className="title-text">Ballistix</span>
             <span className="title-subtitle">Trajectory Prediction System</span>
           </h1>
         </div>
